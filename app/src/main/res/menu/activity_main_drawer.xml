@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/itens_salvos"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Salvos" />
+        <item
+            android:id="@+id/filtrar_itens"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Filtros" />
+        <item
+            android:id="@+id/configuracoes"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Configurações" />
+        <item
+            android:id="@+id/sair"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Sair" />
+    </group>
+
+</menu>
