@@ -1,8 +1,10 @@
 package com.tabembota.doaacao.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +19,8 @@ import com.tabembota.doaacao.R;
 
 public class ListaDoacoesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,15 @@ public class ListaDoacoesActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Indexando componentes do layout no código
+        recyclerView = findViewById(R.id.recyclerViewListaDoacoes);
 
+        //Configurando RecyclerView
+        configurarRecyclerView();
+    }
+
+    private void configurarRecyclerView(){
+        
     }
 
     @Override
@@ -56,7 +68,9 @@ public class ListaDoacoesActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.itens_salvos) {
+            Intent i = new Intent(this, SalvosActivity.class);
 
+            startActivity(i);
         } else if (id == R.id.filtrar_itens) {
 
         } else if (id == R.id.configuracoes) {
