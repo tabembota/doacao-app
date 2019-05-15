@@ -48,23 +48,11 @@ public class ListaDoacoesActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Frame
-
-        //Indexando componentes do layout no código
-        //recyclerView = findViewById(R.id.recyclerViewListaDoacoes);
-
-        //Configurando RecyclerView
-        configurarRecyclerView();
-
         //Colocando o primeiro item do Navigation Drawer como selecionado
         navigationView.setCheckedItem(R.id.lista_doacoes);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frameLayoutMain, principalFragment);
         ft.commit();
-
-    }
-
-    private void configurarRecyclerView(){
 
     }
 
