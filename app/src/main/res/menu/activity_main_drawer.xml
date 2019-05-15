@@ -5,6 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/lista_doacoes"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Lista de doações"
+            />
+        <item
             android:id="@+id/itens_salvos"
             android:icon="@drawable/ic_menu_camera"
             android:title="Salvos" />
