@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.fragment.PrincipalFragment;
+import com.tabembota.doaacao.fragment.SalvosFragment;
 
 import java.security.Principal;
 
@@ -29,6 +30,7 @@ public class ListaDoacoesActivity extends AppCompatActivity
 
     //Inicializar todos os fragments que serão utilizados
     private PrincipalFragment principalFragment = new PrincipalFragment();
+    private SalvosFragment salvosFragment = new SalvosFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +81,9 @@ public class ListaDoacoesActivity extends AppCompatActivity
 
         }
         else if (id == R.id.itens_salvos) {
-            //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            //ft.replace(R.id.frameLayoutMain, principalFragment);
-            //ft.commit();
-
-            Intent i = new Intent(this, SalvosActivity.class);
-            startActivity(i);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, salvosFragment);
+            ft.commit();
 
         } else if (id == R.id.filtrar_itens) {
             //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
