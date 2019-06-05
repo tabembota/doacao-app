@@ -2,6 +2,7 @@ package com.tabembota.doaacao.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.fragment.PrincipalFragment;
@@ -32,9 +34,13 @@ public class ListaDoacoesActivity extends AppCompatActivity
     private PrincipalFragment principalFragment = new PrincipalFragment();
     private SalvosFragment salvosFragment = new SalvosFragment();
 
+    private String name ="", email="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
 
         //Toolbar
@@ -56,6 +62,27 @@ public class ListaDoacoesActivity extends AppCompatActivity
         ft.replace(R.id.frameLayoutMain, principalFragment);
         ft.commit();
 
+        //Faz Login
+        Intent i = new Intent(this, LoginActivity.class);
+        String name = "", email = "";
+        startActivityForResult(i, 100);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == 100){
+                name = data.getStringExtra("LOGIN_NAME");
+                email = data.getStringExtra("LOGIN_EMAIL");
+
+                TextView textViewNavEmail = (TextView) findViewById(R.id.textViewNavEmail);
+                TextView textViewNavName = (TextView) findViewById(R.id.textViewNavName);
+                textViewNavEmail.setText(email);
+                textViewNavName.setText(name);
+            }
+        }
     }
 
     @Override

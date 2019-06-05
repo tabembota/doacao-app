@@ -75,7 +75,8 @@
             android:id="@+id/textInputSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Senha" />
+            android:hint="Senha"
+            android:password="true" />
     </android.support.design.widget.TextInputLayout>
 
     <Button

@@ -1,5 +1,6 @@
 package com.tabembota.doaacao.activity;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,12 @@ public class CadastroActivity extends AppCompatActivity {
         textInputSenha = findViewById(R.id.textInputSenha);
 
     }
+    
+    //Cant press back on login screen
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 
     public void cadastrarUsuario(View view){
         String nome = textInputNome.getText().toString();
@@ -33,12 +40,14 @@ public class CadastroActivity extends AppCompatActivity {
             if(!email.isEmpty() && email.contains("@")){
                 if(!senha.isEmpty() && senha.length() > 6){
 
-                    /*
-                    *
-                    * Cadastrar
-                    *
-                     */
-                    Toast.makeText(this, "Realizar cadastro", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.putExtra("CADASTRO_EMAIL", email);
+                    intent.putExtra("CADASTRO_NOME", nome);
+                    intent.putExtra("CADASTRO_SENHA", senha);
+                    setResult(RESULT_OK, intent);
+                    finish();
+
+                    //Toast.makeText(this, "Realizar cadastro", Toast.LENGTH_SHORT).show();
 
                 }
                 else{
