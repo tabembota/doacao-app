@@ -46,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
                     UsuarioFirebase.getDadosUsuarioLogado().getNome(),
                     UsuarioFirebase.getDadosUsuarioLogado().getEmail()
             );
-
-            Log.d("MISSGAY", UsuarioFirebase.getUsuarioAtual().getUid());
         }
     }
 

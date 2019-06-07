@@ -7,6 +7,8 @@ import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 public class Usuario {
     private String nome;
     private String email;
+    private String bairro;
+    private int avatar = 0;
 
     public Usuario() {
     }
@@ -32,4 +34,19 @@ public class Usuario {
         this.email = email;
     }
 
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(int avatar) {
+        this.avatar = avatar;
+    }
 }
