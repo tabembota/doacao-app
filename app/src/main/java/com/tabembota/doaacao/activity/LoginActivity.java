@@ -39,8 +39,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        //Já logado
         if(usuarioRef.getCurrentUser() != null){
-            //tratar quando já está logado
+            iniciarTelaPrincipal(
+                    UsuarioFirebase.getDadosUsuarioLogado().getNome(),
+                    UsuarioFirebase.getDadosUsuarioLogado().getEmail()
+            );
         }
     }
 
@@ -53,10 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validarLogin(String email, String senha){
         if(!email.isEmpty() && email.contains("@")){
             if(!senha.isEmpty() && senha.length() > 6){
-
-                Toast.makeText(this, "Bem-vindo ao DoAção!", Toast.LENGTH_SHORT).show();
                 return true;
-
             }
             else{
                 Toast.makeText(this, "Insira uma senha válida.", Toast.LENGTH_SHORT).show();
@@ -82,11 +83,12 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this,
                                         "Logado com sucesso!",
                                         Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent();
-                                intent.putExtra("LOGIN_EMAIL", email);
-                                intent.putExtra("LOGIN_NAME", UsuarioFirebase.getDadosUsuarioLogado().getNome());
-                                setResult(RESULT_OK, intent);
-                                finish();
+
+
+                                iniciarTelaPrincipal(
+                                        UsuarioFirebase.getDadosUsuarioLogado().getNome(),
+                                        email
+                                );
                             }
                             else{
 
@@ -129,13 +131,20 @@ public class LoginActivity extends AppCompatActivity {
                 name = data.getStringExtra("CADASTRO_NOME");
                 //senha = data.getStringExtra("CADASTRO_SENHA");
 
-                Intent intent = new Intent();
+                Intent intent = new Intent(LoginActivity.this, ListaDoacoesActivity.class);
                 intent.putExtra("LOGIN_EMAIL", email);
                 intent.putExtra("LOGIN_NAME", name);
-                setResult(RESULT_OK, intent);
+                startActivity(intent);
                 finish();
-
             }
         }
+    }
+
+    private void iniciarTelaPrincipal(String nome, String email){
+        Intent intent = new Intent(LoginActivity.this, ListaDoacoesActivity.class);
+        intent.putExtra("LOGIN_EMAIL", email);
+        intent.putExtra("LOGIN_NAME", nome);
+        startActivity(intent);
+        finish();
     }
 }

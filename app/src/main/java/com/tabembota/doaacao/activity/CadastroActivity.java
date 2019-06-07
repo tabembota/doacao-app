@@ -2,6 +2,7 @@ package com.tabembota.doaacao.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     private TextInputEditText textInputNome, textInputEmail, textInputSenha;
     private FirebaseAuth usuarioRef = ConfiguracaoFirebase.getFirebaseAuth();
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,7 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     private void autenticaUsuario(String nome, String email, String senha){
-        final Usuario usuario = new Usuario();
+        usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setEmail(email);
         usuario.setIdUsuario(Base64Custom.codificarBase64(email));
@@ -97,7 +99,7 @@ public class CadastroActivity extends AppCompatActivity {
 
                     //Mensagem de sucesso e fechamento da activity
                     Toast.makeText(CadastroActivity.this,
-                            "Cadastrado com sucesso! Bem vindo ao DoAção!",
+                            "Cadastrado com sucesso!",
                             Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent();
