@@ -75,7 +75,6 @@ public class CadastroActivity extends AppCompatActivity {
         usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setEmail(email);
-        usuario.setIdUsuario(Base64Custom.codificarBase64(email));
 
         //Da referência à base de usuários, cria uma autenticação
         usuarioRef.createUserWithEmailAndPassword(
@@ -91,7 +90,7 @@ public class CadastroActivity extends AppCompatActivity {
                     //(usaremos os dados dele depois)
                     try{
                         UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
-                        usuario.salvar();
+                        usuario.salvar(UsuarioFirebase.getUsuarioAtual());
                     }
                     catch (Exception e){
                         e.printStackTrace();

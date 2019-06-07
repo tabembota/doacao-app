@@ -1,19 +1,19 @@
 package com.tabembota.doaacao.model;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 
 public class Usuario {
     private String nome;
     private String email;
-    private String idUsuario;
 
     public Usuario() {
     }
 
-    public void salvar(){
+    public void salvar(FirebaseUser firebaseUser){
         DatabaseReference databaseReference = ConfiguracaoFirebase.getDatabaseReference();
-        databaseReference.child("usuarios").child(idUsuario).setValue(this);
+        databaseReference.child("user").child(firebaseUser.getUid()).setValue(this);
     }
 
     public String getNome() {
@@ -32,11 +32,4 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 }

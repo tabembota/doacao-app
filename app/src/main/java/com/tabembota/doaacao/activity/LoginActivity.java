@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -45,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
                     UsuarioFirebase.getDadosUsuarioLogado().getNome(),
                     UsuarioFirebase.getDadosUsuarioLogado().getEmail()
             );
+
+            Log.d("MISSGAY", UsuarioFirebase.getUsuarioAtual().getUid());
         }
     }
 
