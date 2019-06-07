@@ -24,7 +24,7 @@ import com.tabembota.doaacao.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
 
-    private TextInputEditText textInputNome, textInputEmail, textInputSenha;
+    private TextInputEditText textInputNome, textInputEmail, textInputSenha, textInputBairro;
     private FirebaseAuth usuarioRef = ConfiguracaoFirebase.getFirebaseAuth();
     private Usuario usuario;
 
@@ -36,6 +36,7 @@ public class CadastroActivity extends AppCompatActivity {
         textInputNome = findViewById(R.id.textInputNome);
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputSenha = findViewById(R.id.textInputSenha);
+        textInputBairro = findViewById(R.id.textInputBairro);
 
     }
     
@@ -50,16 +51,21 @@ public class CadastroActivity extends AppCompatActivity {
         String nome = textInputNome.getText().toString();
         String email = textInputEmail.getText().toString();
         String senha = textInputSenha.getText().toString();
+        String bairro = textInputBairro.getText().toString();
 
         //Validação da entrada
         if(!nome.isEmpty()){
             if(!email.isEmpty()){
-                if(!senha.isEmpty()){
-                    //Se tudo certo, autentica usuário
-                    autenticaUsuario(nome, email, senha);
+                if(!bairro.isEmpty()) {
+                    if (!senha.isEmpty()) {
+                        //Se tudo certo, autentica usuário
+                        autenticaUsuario(nome, email, senha);
+                    } else {
+                        Toast.makeText(this, "Insira uma senha.", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
-                    Toast.makeText(this, "Insira uma senha.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Insira um bairro", Toast.LENGTH_SHORT).show();
                 }
             }
             else{
