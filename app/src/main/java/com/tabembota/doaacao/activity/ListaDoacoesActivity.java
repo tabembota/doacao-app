@@ -77,8 +77,8 @@ public class ListaDoacoesActivity extends AppCompatActivity
                 name = data.getStringExtra("LOGIN_NAME");
                 email = data.getStringExtra("LOGIN_EMAIL");
 
-                TextView textViewNavEmail = (TextView) findViewById(R.id.textViewNavEmail);
-                TextView textViewNavName = (TextView) findViewById(R.id.textViewNavName);
+                TextView textViewNavEmail = findViewById(R.id.textViewNavEmail);
+                TextView textViewNavName = findViewById(R.id.textViewNavName);
                 textViewNavEmail.setText(email);
                 textViewNavName.setText(name);
             }

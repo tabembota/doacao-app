@@ -1,6 +1,7 @@
 package com.tabembota.doaacao.activity;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +9,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.tabembota.doaacao.R;
+import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.UsuarioFirebase;
 
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText textInputEmail, textInputSenha;
     private String name, email, senha;
+    private FirebaseAuth usuarioRef = ConfiguracaoFirebase.getFirebaseAuth();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +33,15 @@ public class LoginActivity extends AppCompatActivity {
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputSenha = findViewById(R.id.textInputSenha);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(usuarioRef.getCurrentUser() != null){
+            //tratar quando já está logado
+        }
     }
 
     //Cant press back on login screen
@@ -55,12 +74,42 @@ public class LoginActivity extends AppCompatActivity {
         senha = textInputSenha.getText().toString();
 
         if(validarLogin(email, senha)){
-            //startActivity(new Intent(LoginActivity.this, ListaDoacoesActivity.class));
-            Intent intent = new Intent();
-            intent.putExtra("LOGIN_EMAIL", email);
-            intent.putExtra("LOGIN_NAME", email);
-            setResult(RESULT_OK, intent);
-            finish();
+            usuarioRef.signInWithEmailAndPassword(email, senha)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(LoginActivity.this,
+                                        "Logado com sucesso!",
+                                        Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent();
+                                intent.putExtra("LOGIN_EMAIL", email);
+                                intent.putExtra("LOGIN_NAME", UsuarioFirebase.getDadosUsuarioLogado().getNome());
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }
+                            else{
+
+                                String excecao = "";
+                                try{
+                                    throw task.getException();
+                                }
+                                catch(FirebaseAuthInvalidUserException e){
+                                    excecao = "Usuário não está cadastrado.";
+                                }
+                                catch(FirebaseAuthInvalidCredentialsException e){
+                                    excecao = "E-mail e senha não correspondem a um usuário válido.";
+                                }
+                                catch(Exception e){
+                                    excecao = "Erro ao cadastrar usuário: " + e.getMessage();
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(LoginActivity.this,
+                                        excecao,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
     }
 
@@ -78,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             if(requestCode == 101){
                 email = data.getStringExtra("CADASTRO_EMAIL");
                 name = data.getStringExtra("CADASTRO_NOME");
-                senha = data.getStringExtra("CADASTRO_SENHA");
+                //senha = data.getStringExtra("CADASTRO_SENHA");
 
                 Intent intent = new Intent();
                 intent.putExtra("LOGIN_EMAIL", email);

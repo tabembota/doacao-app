@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1071765225655",
+    "firebase_url": "https://doacao-fa8a7.firebaseio.com",
+    "project_id": "doacao-fa8a7",
+    "storage_bucket": "doacao-fa8a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071765225655:android:fd61075bc8d20f07",
+        "android_client_info": {
+          "package_name": "com.tabembota.doaacao"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071765225655-tttlftd72arssuafvi9k90dthdv8qmm2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tabembota.doaacao",
+            "certificate_hash": "73826ce9a1c697bdc33edcd6872770a14bf68c2d"
+          }
+        },
+        {
+          "client_id": "1071765225655-6hk43d79g25o4io824uqd1jhk5nsbsgg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWbNCp53xSQSF7MjiMhDSUDDS4F9ZnVFE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071765225655-6hk43d79g25o4io824uqd1jhk5nsbsgg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
