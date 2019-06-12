@@ -102,39 +102,6 @@ public class PrincipalFragment extends Fragment {
         );
         listaDoacao.add(doacao);
 
-        doacao = new Doacao(
-                "Klabin doando pano",
-                "Estamos doando pano somente para quem conhece a empresa",
-                98765,
-                "Estúdio da Klabin",
-                "Klabinando",
-                "Não tem",
-                date
-        );
-        listaDoacao.add(doacao);
-
-        doacao = new Doacao(
-                "Miss sendo miss",
-                "Venha doar o miss, é só buscar",
-                86757,
-                "Casa do miss = formula",
-                "Aluguel",
-                "Tem, mas nao ta com a gente",
-                date
-        );
-        listaDoacao.add(doacao);
-
-        doacao = new Doacao(
-                "Reuniao da ADA",
-                "Reuniao da ADA que o cinco nunca vai e reclama",
-                1234,
-                "Sei la, c2?",
-                "Role CUTavel",
-                "Park",
-                date
-        );
-        listaDoacao.add(doacao);
-
         //doacaoAdapter.notifyDataSetChanged();
     }
 
