@@ -3,6 +3,8 @@ Projeto referente ao aplicativo DoAção, criado no Android Studio. A aplicaçã
 Desenvolvido por:
 * Alexandre Batistella Bellas
 * Guilherme Lima Blatt
+* Igor Guedes Rodrigues
+* Murilo Luz Stucki
 
 ## Execução
 Abra o projeto diretamente pelo Android Studio, a partir da pasta raiz do repositório. Para isso, clone o repositório em sua pasta de preferência:
