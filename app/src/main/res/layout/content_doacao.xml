@@ -24,7 +24,7 @@
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
                 android:layout_weight="2"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@mipmap/logo" />
 
             <TextView
                 android:id="@+id/textViewDoacaoTitulo"
