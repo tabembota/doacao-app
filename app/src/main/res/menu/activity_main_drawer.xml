@@ -18,6 +18,10 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Filtros" />
         <item
+            android:id="@+id/criar_oportunidade"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Criar oportunidade" />
+        <item
             android:id="@+id/configuracoes"
             android:icon="@drawable/ic_menu_manage"
             android:title="Configurações" />

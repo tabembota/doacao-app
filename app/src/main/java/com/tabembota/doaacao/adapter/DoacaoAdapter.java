@@ -39,7 +39,7 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
 
         Doacao doacao = listaDoacoes.get(i);
 
-        //myViewHolder.imagemDoacao.setImageResource(doacao.getImagem());
+        myViewHolder.imagemDoacao.setImageResource(doacao.getImagem());
         myViewHolder.textoTitulo.setText(doacao.getTitulo());
         myViewHolder.textoDescricao.setText(doacao.getDescricao());
         //myViewHolder.textoData.setText(doacao.getData().toString());

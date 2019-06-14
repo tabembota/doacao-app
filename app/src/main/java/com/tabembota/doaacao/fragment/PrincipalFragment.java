@@ -67,16 +67,13 @@ public class PrincipalFragment extends Fragment {
 
     private void recuperarDadosListaDeDoacoes(){
         listaDoacao.clear();
-        Doacao doacao;
+        /*Doacao doacao;
         Date date = new Date();
         doacao = new Doacao(
             "Klabin doando pano",
                 "Estamos doando pano somente para quem conhece a empresa",
                 98765,
-                "Estúdio da Klabin",
-                "Klabinando",
-                "Não tem",
-                date
+                0
         );
         listaDoacao.add(doacao);
 
@@ -84,10 +81,7 @@ public class PrincipalFragment extends Fragment {
                 "Miss sendo miss",
                 "Venha doar o miss, é só buscar",
                 86757,
-                "Casa do miss = formula",
-                "Aluguel",
-                "Tem, mas nao ta com a gente",
-                date
+                1
         );
         listaDoacao.add(doacao);
 
@@ -95,12 +89,9 @@ public class PrincipalFragment extends Fragment {
                 "Reuniao da ADA",
                 "Reuniao da ADA que o cinco nunca vai e reclama",
                 1234,
-                "Sei la, c2?",
-                "Role CUTavel",
-                "Park",
-                date
+                2
         );
-        listaDoacao.add(doacao);
+        listaDoacao.add(doacao);*/
 
         //doacaoAdapter.notifyDataSetChanged();
     }

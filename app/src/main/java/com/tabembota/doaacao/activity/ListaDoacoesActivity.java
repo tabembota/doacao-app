@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.fragment.ConfiguracoesFragment;
+import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.PrincipalFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
@@ -36,8 +38,10 @@ public class ListaDoacoesActivity extends AppCompatActivity
     private TextView textViewNavEmail, textViewNavName;
 
     //Inicializar todos os fragments que serão utilizados
-    private PrincipalFragment principalFragment = new PrincipalFragment();
+    private static PrincipalFragment principalFragment = new PrincipalFragment();
     private SalvosFragment salvosFragment = new SalvosFragment();
+    private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
+    private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
 
     private String name ="", email="";
 
@@ -139,10 +143,13 @@ public class ListaDoacoesActivity extends AppCompatActivity
             ft.commit();
 
         } else if (id == R.id.filtrar_itens) {
-            //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            //ft.replace(R.id.frameLayoutMain, principalFragment);
-            //ft.commit();
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, configuracoesFragment);
+            ft.commit();
+        } else if (id == R.id.criar_oportunidade){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, criarOportunidadeFragment);
+            ft.commit();
         } else if (id == R.id.configuracoes) {
 
 
@@ -155,5 +162,9 @@ public class ListaDoacoesActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static PrincipalFragment getPrincipalFragment(){
+        return principalFragment;
     }
 }
