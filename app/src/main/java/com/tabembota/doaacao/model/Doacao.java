@@ -1,7 +1,13 @@
 package com.tabembota.doaacao.model;
 
 
-public class Doacao{
+import com.google.firebase.database.Exclude;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Doacao implements Comparable<Doacao>{
 
     private String user_id;
     private String titulo;
@@ -9,6 +15,9 @@ public class Doacao{
     private String email;
     private int imagem;
     private int filtro;
+    private long data;
+
+
 
     public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro) {
         this.user_id = user_id;
@@ -17,6 +26,7 @@ public class Doacao{
         this.email = email;
         this.imagem = imagem;
         this.filtro = filtro;
+        this.data = new Date().getTime();
     }
 
     public Doacao(){}
@@ -67,5 +77,23 @@ public class Doacao{
 
     public void setFiltro(int filtro) {
         this.filtro = filtro;
+    }
+
+    public long getData(){
+        return data;
+    }
+
+    public void setData(long data){
+        this.data = data;
+    }
+
+
+    @Override
+    public int compareTo(Doacao o) {
+        if(this.getData() > o.getData())
+            return 1;
+        else if (this.getData() == o.getData())
+            return 0;
+        return -1;
     }
 }

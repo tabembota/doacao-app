@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +14,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +29,12 @@ import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
 
+import java.util.ArrayList;
+
 public class PrincipalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private RecyclerView recyclerView;
+    //Componentes da interface
     private TextView textViewNavEmail, textViewNavName;
 
     //Inicializar todos os fragments que serão utilizados
@@ -34,12 +43,12 @@ public class PrincipalActivity extends AppCompatActivity
     private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
     private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
 
-    private String name ="", email="";
+    private String name = "", email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_principal);
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -51,6 +60,7 @@ public class PrincipalActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -111,17 +121,14 @@ public class PrincipalActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, salvosFragment);
             ft.commit();
-
-        } else if (id == R.id.filtrar_itens) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayoutMain, configuracoesFragment);
-            ft.commit();
         } else if (id == R.id.criar_oportunidade){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, criarOportunidadeFragment);
             ft.commit();
         } else if (id == R.id.configuracoes) {
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, configuracoesFragment);
+            ft.commit();
 
         } else if (id == R.id.sair) {
             ConfiguracaoFirebase.getFirebaseAuth().signOut();

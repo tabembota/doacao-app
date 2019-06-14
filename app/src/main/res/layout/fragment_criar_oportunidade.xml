@@ -79,7 +79,8 @@
         <RadioGroup
             android:id="@+id/rgTag"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:checkedButton="@id/rbVoluntariado">
 
             <RadioButton
                 android:id="@+id/rbVoluntariado"

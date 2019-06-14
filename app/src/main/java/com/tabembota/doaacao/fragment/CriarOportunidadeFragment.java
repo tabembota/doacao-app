@@ -4,6 +4,7 @@ package com.tabembota.doaacao.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -27,8 +28,9 @@ public class CriarOportunidadeFragment extends Fragment {
     private EditText editTextTitulo, editTextDescricao, editTextEmail;
     private RadioGroup rgTag;
     private Button btCriar;
+    private NavigationView navigationView;
 
-    private int tagescolhida;
+    private int tagescolhida = 0;
 
     public CriarOportunidadeFragment() {
         // Required empty public constructor
@@ -57,11 +59,13 @@ public class CriarOportunidadeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        editTextTitulo = getView().findViewById(R.id.editTextTitulo);
-        editTextDescricao = getView().findViewById(R.id.editTextDescricao);
-        editTextEmail = getView().findViewById(R.id.editTextEmail);
+        editTextTitulo = view.findViewById(R.id.editTextTitulo);
+        editTextDescricao = view.findViewById(R.id.editTextDescricao);
+        editTextEmail = view.findViewById(R.id.editTextEmail);
 
-        rgTag = getView().findViewById(R.id.rgTag);
+        navigationView = getActivity().findViewById(R.id.nav_view);
+
+        rgTag = view.findViewById(R.id.rgTag);
 
         rgTag.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -118,6 +122,13 @@ public class CriarOportunidadeFragment extends Fragment {
                     Toast.makeText(getContext(),
                             "Oportunidade de doação criada com sucesso! Você receberá um e-mail de confirmação em breve (ainda não).",
                             Toast.LENGTH_SHORT).show();
+
+                    navigationView.setCheckedItem(R.id.lista_doacoes);
+
+                    editTextTitulo.setText("");
+                    editTextDescricao.setText("");
+                    editTextEmail.setText("");
+                    rgTag.check(R.id.rbVoluntariado);
 
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
