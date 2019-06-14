@@ -39,10 +39,23 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
 
         Doacao doacao = listaDoacoes.get(i);
 
-        //myViewHolder.imagemDoacao.setImageResource(doacao.getImagem());
+        myViewHolder.imagemDoacao.setImageResource(doacao.getImagem());
         myViewHolder.textoTitulo.setText(doacao.getTitulo());
         myViewHolder.textoDescricao.setText(doacao.getDescricao());
-        //myViewHolder.textoData.setText(doacao.getData().toString());
+
+        int filtro = doacao.getFiltro();
+        String filtro_s = "Sem tags";
+
+        if (filtro == 0)
+            filtro_s = "Voluntariado";
+        else if (filtro == 1)
+            filtro_s = "Móveis";
+        else if (filtro == 2)
+            filtro_s = "Alimentos";
+        else if (filtro == 3)
+            filtro_s = "Roupas";
+
+        myViewHolder.textoTag.setText(filtro_s);
 
     }
 
@@ -54,7 +67,7 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         ImageView imagemDoacao;
-        TextView textoTitulo, textoDescricao, textoData;
+        TextView textoTitulo, textoDescricao, textoTag;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,7 +75,7 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
             imagemDoacao = itemView.findViewById(R.id.imagemDoacao);
             textoTitulo = itemView.findViewById(R.id.textoTitulo);
             textoDescricao = itemView.findViewById(R.id.textoDescricao);
-            textoData = itemView.findViewById(R.id.textoData);
+            textoTag = itemView.findViewById(R.id.textoTag);
 
         }
     }

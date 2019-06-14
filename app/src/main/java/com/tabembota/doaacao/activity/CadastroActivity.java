@@ -59,7 +59,7 @@ public class CadastroActivity extends AppCompatActivity {
                 if(!bairro.isEmpty()) {
                     if (!senha.isEmpty()) {
                         //Se tudo certo, autentica usuário
-                        autenticaUsuario(nome, email, senha);
+                        autenticaUsuario(nome, email, senha, bairro);
                     } else {
                         Toast.makeText(this, "Insira uma senha.", Toast.LENGTH_SHORT).show();
                     }
@@ -77,10 +77,11 @@ public class CadastroActivity extends AppCompatActivity {
         }
     }
 
-    private void autenticaUsuario(String nome, String email, String senha){
+    private void autenticaUsuario(String nome, String email, String senha, String bairro){
         usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setEmail(email);
+        usuario.setBairro(bairro);
 
         //Da referência à base de usuários, cria uma autenticação
         usuarioRef.createUserWithEmailAndPassword(

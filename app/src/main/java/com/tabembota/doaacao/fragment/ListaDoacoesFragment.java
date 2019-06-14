@@ -1,7 +1,6 @@
 package com.tabembota.doaacao.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,27 +14,32 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.RecyclerItemClickListener;
+import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
+import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 import com.tabembota.doaacao.model.Doacao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class PrincipalFragment extends Fragment {
+public class ListaDoacoesFragment extends Fragment {
 
     private RecyclerView recyclerViewListaDoacoes;
     private List<Doacao> listaDoacao = new ArrayList<>();
     private DoacaoAdapter doacaoAdapter;
-    private int flagCriado = 0;
 
+    private ChildEventListener recuperarOportunidadesEventListener;
+    private DatabaseReference oportunidadesRef;
 
-    public PrincipalFragment() {
+    private PrincipalActivity principalActivity = ((PrincipalActivity) getActivity());
+
+    public ListaDoacoesFragment() {
         // Required empty public constructor
     }
 
@@ -51,11 +55,14 @@ public class PrincipalFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewListaDoacoes = getView().findViewById(R.id.recyclerViewListaDoacoes);
+        recyclerViewListaDoacoes = view.findViewById(R.id.recyclerViewListaDoacoes);
+        oportunidadesRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
+
+        principalActivity.mudarTitulo("Lista de doações");
 
         //Configurando RecyclerView
-        recuperarDadosListaDeDoacoes();
         configurarRecyclerView();
+        recuperarDadosListaDeDoacoes();
 
         Log.d("MISSGAY", "crio dinovo");
     }
@@ -65,44 +72,43 @@ public class PrincipalFragment extends Fragment {
         super.onStart();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        oportunidadesRef.removeEventListener(recuperarOportunidadesEventListener);
+    }
+
     private void recuperarDadosListaDeDoacoes(){
         listaDoacao.clear();
-        Doacao doacao;
-        Date date = new Date();
-        doacao = new Doacao(
-            "Klabin doando pano",
-                "Estamos doando pano somente para quem conhece a empresa",
-                98765,
-                "Estúdio da Klabin",
-                "Klabinando",
-                "Não tem",
-                date
-        );
-        listaDoacao.add(doacao);
 
-        doacao = new Doacao(
-                "Miss sendo miss",
-                "Venha doar o miss, é só buscar",
-                86757,
-                "Casa do miss = formula",
-                "Aluguel",
-                "Tem, mas nao ta com a gente",
-                date
-        );
-        listaDoacao.add(doacao);
+        recuperarOportunidadesEventListener = oportunidadesRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Doacao doacao = dataSnapshot.getValue(Doacao.class);
+                listaDoacao.add(doacao);
+                doacaoAdapter.notifyDataSetChanged();
+            }
 
-        doacao = new Doacao(
-                "Reuniao da ADA",
-                "Reuniao da ADA que o cinco nunca vai e reclama",
-                1234,
-                "Sei la, c2?",
-                "Role CUTavel",
-                "Park",
-                date
-        );
-        listaDoacao.add(doacao);
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-        //doacaoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void configurarRecyclerView(){
