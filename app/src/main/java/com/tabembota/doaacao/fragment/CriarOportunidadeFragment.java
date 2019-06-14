@@ -1,6 +1,7 @@
 package com.tabembota.doaacao.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -103,7 +105,7 @@ public class CriarOportunidadeFragment extends Fragment {
 
         if(!titulo.isEmpty()){
             if(!descricao.isEmpty()){
-                if(!email.isEmpty() && email.contains("@") && email.contains(".")){
+                if(!email.isEmpty()){
 
                     Doacao doacao = new Doacao(
                             UsuarioFirebase.getUsuarioAtual().getUid(),
@@ -130,6 +132,8 @@ public class CriarOportunidadeFragment extends Fragment {
                     editTextEmail.setText("");
                     rgTag.check(R.id.rbVoluntariado);
 
+                    fecharTeclado();
+
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
                     ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
@@ -138,7 +142,7 @@ public class CriarOportunidadeFragment extends Fragment {
                 }
                 else{
                     Toast.makeText(getContext(),
-                            "Insira um e-mail válido.",
+                            "Insira uma mensagem válida.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -153,5 +157,13 @@ public class CriarOportunidadeFragment extends Fragment {
                     "Insira um título.",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void fecharTeclado(){
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 }

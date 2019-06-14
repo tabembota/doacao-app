@@ -39,12 +39,6 @@ public class CadastroActivity extends AppCompatActivity {
         textInputBairro = findViewById(R.id.textInputBairro);
 
     }
-    
-    //Cant press back on login screen
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-    }
 
     public void cadastrarUsuario(View view){
         //Obtém entradas do usuário

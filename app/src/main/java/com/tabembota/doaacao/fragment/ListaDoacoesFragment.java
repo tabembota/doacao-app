@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +18,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -35,7 +36,6 @@ import com.tabembota.doaacao.model.Doacao;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ListaDoacoesFragment extends Fragment {
@@ -43,6 +43,7 @@ public class ListaDoacoesFragment extends Fragment {
     private RecyclerView recyclerViewListaDoacoes;
     private List<Doacao> listaDoacao = new ArrayList<>();
     private DoacaoAdapter doacaoAdapter;
+    private ProgressBar progressBar;
 
     //Firebase
     private ChildEventListener recuperarOportunidadesEventListener;
@@ -50,6 +51,9 @@ public class ListaDoacoesFragment extends Fragment {
 
     //Filtros
     private ArrayList<Integer> filtroEscolhido = new ArrayList<>();
+
+    //Variáveis quaisquer
+    private int recuperouDados = 0;
 
     public ListaDoacoesFragment() {
         // Required empty public constructor
@@ -60,7 +64,7 @@ public class ListaDoacoesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_principal, container, false);
+        return inflater.inflate(R.layout.fragment_lista_doacoes, container, false);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class ListaDoacoesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerViewListaDoacoes = view.findViewById(R.id.recyclerViewListaDoacoes);
+        progressBar = view.findViewById(R.id.progressBar);
         oportunidadesRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
 
         ((PrincipalActivity) getActivity()).mudarTitulo("Lista de doações");
@@ -80,6 +85,8 @@ public class ListaDoacoesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        exibirProgress(true);
+        fechaProgressAposTempo(100000);
     }
 
     @Override
@@ -102,6 +109,8 @@ public class ListaDoacoesFragment extends Fragment {
                 Collections.sort(listaDoacao);
 
                 doacaoAdapter.notifyDataSetChanged();
+                recuperouDados = 1;
+                exibirProgress(false);
             }
 
             @Override
@@ -121,7 +130,9 @@ public class ListaDoacoesFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(getActivity(),
+                        "Verifique sua conexão com a internet.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -174,12 +185,33 @@ public class ListaDoacoesFragment extends Fragment {
             final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
             final CheckBox cbVoluntariado, cbMoveis, cbAlimentos, cbRoupas;
+            LinearLayout linearLayoutPopUp = popupView.findViewById(R.id.layoutFundoPopUp);
             cbVoluntariado = popupView.findViewById(R.id.cbVoluntariado);
             cbMoveis = popupView.findViewById(R.id.cbMoveis);
             cbAlimentos = popupView.findViewById(R.id.cbAlimentos);
             cbRoupas = popupView.findViewById(R.id.cbRoupas);
 
             Button btAplicarFiltro = popupView.findViewById(R.id.btAplicarFiltro);
+
+            if(filtroEscolhido.contains(0)){
+                cbVoluntariado.setChecked(true);
+            }
+            if(filtroEscolhido.contains(1)){
+                cbMoveis.setChecked(true);
+            }
+            if(filtroEscolhido.contains(2)){
+                cbAlimentos.setChecked(true);
+            }
+            if(filtroEscolhido.contains(3)){
+                cbRoupas.setChecked(true);
+            }
+
+            linearLayoutPopUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
 
             btAplicarFiltro.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -212,5 +244,39 @@ public class ListaDoacoesFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void exibirProgress(boolean exibirProgress) {
+        progressBar.setVisibility(exibirProgress ? View.VISIBLE : View.GONE);
+        recyclerViewListaDoacoes.setVisibility(!exibirProgress ? View.VISIBLE : View.GONE);
+    }
+
+    private void fechaProgressAposTempo(int tempo){
+        final int t = tempo;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(t);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(recuperouDados == 0){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            progressBar.setVisibility(View.GONE);
+
+                            Toast.makeText(getActivity(),
+                                    "Não foi possível obter as informações da internet. Tente novamente.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+        thread.start();
     }
 }

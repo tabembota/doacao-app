@@ -1,11 +1,9 @@
 package com.tabembota.doaacao.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,11 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.PopupWindow;
-import android.widget.RadioGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +23,6 @@ import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
 
-import java.util.ArrayList;
 
 public class PrincipalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -138,6 +131,8 @@ public class PrincipalActivity extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        fecharTeclado();
         return true;
     }
 
@@ -147,5 +142,16 @@ public class PrincipalActivity extends AppCompatActivity
 
     public void mudarTitulo(String titulo){
         getSupportActionBar().setTitle(titulo);
+    }
+
+    public void fecharTeclado(){
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if(inputManager.isActive()){
+            inputManager.hideSoftInputFromWindow(new View(this).getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
     }
 }
