@@ -1,14 +1,18 @@
 package com.tabembota.doaacao.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -27,8 +31,9 @@ public class CriarOportunidadeFragment extends Fragment {
     private EditText editTextTitulo, editTextDescricao, editTextEmail;
     private RadioGroup rgTag;
     private Button btCriar;
+    private NavigationView navigationView;
 
-    private int tagescolhida;
+    private int tagescolhida = 0;
 
     public CriarOportunidadeFragment() {
         // Required empty public constructor
@@ -57,11 +62,13 @@ public class CriarOportunidadeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        editTextTitulo = getView().findViewById(R.id.editTextTitulo);
-        editTextDescricao = getView().findViewById(R.id.editTextDescricao);
-        editTextEmail = getView().findViewById(R.id.editTextEmail);
+        editTextTitulo = view.findViewById(R.id.editTextTitulo);
+        editTextDescricao = view.findViewById(R.id.editTextDescricao);
+        editTextEmail = view.findViewById(R.id.editTextEmail);
 
-        rgTag = getView().findViewById(R.id.rgTag);
+        navigationView = getActivity().findViewById(R.id.nav_view);
+
+        rgTag = view.findViewById(R.id.rgTag);
 
         rgTag.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -85,6 +92,42 @@ public class CriarOportunidadeFragment extends Fragment {
             }
         });
 
+        editTextTitulo.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextTitulo.clearFocus();
+                    editTextDescricao.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextDescricao.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextDescricao.clearFocus();
+                    editTextEmail.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextEmail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextEmail.clearFocus();
+                    rgTag.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         ((PrincipalActivity) getActivity()).mudarTitulo("Criar oportunidade");
     }
 
@@ -99,7 +142,7 @@ public class CriarOportunidadeFragment extends Fragment {
 
         if(!titulo.isEmpty()){
             if(!descricao.isEmpty()){
-                if(!email.isEmpty() && email.contains("@") && email.contains(".")){
+                if(!email.isEmpty()){
 
                     Doacao doacao = new Doacao(
                             UsuarioFirebase.getUsuarioAtual().getUid(),
@@ -119,6 +162,15 @@ public class CriarOportunidadeFragment extends Fragment {
                             "Oportunidade de doação criada com sucesso! Você receberá um e-mail de confirmação em breve (ainda não).",
                             Toast.LENGTH_SHORT).show();
 
+                    navigationView.setCheckedItem(R.id.lista_doacoes);
+
+                    editTextTitulo.setText("");
+                    editTextDescricao.setText("");
+                    editTextEmail.setText("");
+                    rgTag.check(R.id.rbVoluntariado);
+
+                    fecharTeclado();
+
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
                     ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
@@ -127,7 +179,7 @@ public class CriarOportunidadeFragment extends Fragment {
                 }
                 else{
                     Toast.makeText(getContext(),
-                            "Insira um e-mail válido.",
+                            "Insira uma mensagem válida.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -142,5 +194,13 @@ public class CriarOportunidadeFragment extends Fragment {
                     "Insira um título.",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void fecharTeclado(){
+        InputMethodManager inputManager = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

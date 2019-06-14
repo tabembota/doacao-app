@@ -17,8 +17,6 @@ import com.tabembota.doaacao.activity.PrincipalActivity;
  */
 public class SalvosFragment extends Fragment {
 
-    private PrincipalActivity principalActivity = ((PrincipalActivity) getActivity());
-
     public SalvosFragment() {
         // Required empty public constructor
     }
@@ -35,7 +33,7 @@ public class SalvosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        principalActivity.mudarTitulo("Doações salvas");
+        ((PrincipalActivity) getActivity()).mudarTitulo("Doações salvas");
 
     }
 }

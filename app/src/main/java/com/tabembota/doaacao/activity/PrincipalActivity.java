@@ -1,9 +1,10 @@
 package com.tabembota.doaacao.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,16 @@ import com.tabembota.doaacao.fragment.ConfiguracoesFragment;
 import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
+import com.tabembota.doaacao.model.Doacao;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PrincipalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private RecyclerView recyclerView;
+    //Componentes da interface
     private TextView textViewNavEmail, textViewNavName;
 
     //Inicializar todos os fragments que serão utilizados
@@ -34,12 +42,15 @@ public class PrincipalActivity extends AppCompatActivity
     private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
     private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
 
-    private String name ="", email="";
+    //Variáveis quaisquer
+    public List<Doacao> listaSalvos = new ArrayList<>();
+
+    private String name = "", email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_principal);
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -48,9 +59,17 @@ public class PrincipalActivity extends AppCompatActivity
         //Navigation Drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                fecharTeclado();
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -111,17 +130,14 @@ public class PrincipalActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, salvosFragment);
             ft.commit();
-
-        } else if (id == R.id.filtrar_itens) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayoutMain, configuracoesFragment);
-            ft.commit();
         } else if (id == R.id.criar_oportunidade){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, criarOportunidadeFragment);
             ft.commit();
         } else if (id == R.id.configuracoes) {
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, configuracoesFragment);
+            ft.commit();
 
         } else if (id == R.id.sair) {
             ConfiguracaoFirebase.getFirebaseAuth().signOut();
@@ -131,8 +147,11 @@ public class PrincipalActivity extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        fecharTeclado();
         return true;
     }
+
 
     public static ListaDoacoesFragment getListaDoacoesFragment(){
         return listaDoacoesFragment;
@@ -140,5 +159,16 @@ public class PrincipalActivity extends AppCompatActivity
 
     public void mudarTitulo(String titulo){
         getSupportActionBar().setTitle(titulo);
+    }
+
+    public void fecharTeclado(){
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View currentFocusedView = getCurrentFocus();
+        if (currentFocusedView != null) {
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
     }
 }
