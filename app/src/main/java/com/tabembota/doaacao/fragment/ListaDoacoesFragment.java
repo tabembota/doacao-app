@@ -4,6 +4,7 @@ package com.tabembota.doaacao.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -79,13 +80,13 @@ public class ListaDoacoesFragment extends Fragment {
 
         //Configurando RecyclerView
         configurarRecyclerView();
-        recuperarDadosListaDeDoacoes();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         exibirProgress(true);
+        recuperarDadosListaDeDoacoes();
         fechaProgressAposTempo(100000);
     }
 
@@ -186,6 +187,7 @@ public class ListaDoacoesFragment extends Fragment {
 
             final CheckBox cbVoluntariado, cbMoveis, cbAlimentos, cbRoupas;
             LinearLayout linearLayoutPopUp = popupView.findViewById(R.id.layoutFundoPopUp);
+            ConstraintLayout constraintLayout = popupView.findViewById(R.id.constraintLayoutPopUp);
             cbVoluntariado = popupView.findViewById(R.id.cbVoluntariado);
             cbMoveis = popupView.findViewById(R.id.cbMoveis);
             cbAlimentos = popupView.findViewById(R.id.cbAlimentos);
@@ -205,6 +207,13 @@ public class ListaDoacoesFragment extends Fragment {
             if(filtroEscolhido.contains(3)){
                 cbRoupas.setChecked(true);
             }
+
+            constraintLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    
+                }
+            });
 
             linearLayoutPopUp.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,42 @@ public class CriarOportunidadeFragment extends Fragment {
             }
         });
 
+        editTextTitulo.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextTitulo.clearFocus();
+                    editTextDescricao.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextDescricao.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextDescricao.clearFocus();
+                    editTextEmail.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextEmail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextEmail.clearFocus();
+                    rgTag.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         ((PrincipalActivity) getActivity()).mudarTitulo("Criar oportunidade");
     }
 
@@ -164,6 +201,6 @@ public class CriarOportunidadeFragment extends Fragment {
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_IMPLICIT_ONLY);
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

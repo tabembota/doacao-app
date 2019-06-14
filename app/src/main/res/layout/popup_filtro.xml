@@ -11,6 +11,7 @@
     android:padding="32dp">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayoutPopUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/fundo_filtros"
