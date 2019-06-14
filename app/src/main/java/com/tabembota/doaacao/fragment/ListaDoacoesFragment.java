@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,6 +82,7 @@ public class ListaDoacoesFragment extends Fragment {
 
         //Configurando RecyclerView
         configurarRecyclerView();
+        swipe();
     }
 
     @Override
@@ -211,7 +214,7 @@ public class ListaDoacoesFragment extends Fragment {
             constraintLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    
+
                 }
             });
 
@@ -287,5 +290,65 @@ public class ListaDoacoesFragment extends Fragment {
             }
         });
         thread.start();
+    }
+
+    private void swipe(){
+
+        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            //esquerda: não interessado
+            //direita: salvar
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                if(i == ItemTouchHelper.START || i == ItemTouchHelper.END){
+                    salvarOportunidade(viewHolder);
+                }
+            }
+        };
+
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerViewListaDoacoes);
+
+    }
+
+    private void salvarOportunidade(RecyclerView.ViewHolder viewHolder){
+
+        int position = viewHolder.getAdapterPosition();
+        final Doacao doacao = listaDoacao.get(position);
+        if (!((PrincipalActivity) getActivity()).listaSalvos.contains(doacao)) {
+            ((PrincipalActivity) getActivity()).listaSalvos.add(doacao);
+
+            //Salvar no firebase
+            DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference();
+            interesseRef = interesseRef.child("interesse");
+
+            Snackbar.make(viewHolder.itemView, "Interesse marcado com sucesso!", Snackbar.LENGTH_LONG)
+                    .setAction("Desfazer", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listaDoacao.remove(doacao);
+                            Toast.makeText(getActivity(), "Desfeito.", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(R.color.colorPrimary))
+                    .show();
+        }
+        else{
+            Toast.makeText(getActivity(), "Você já marcou interesse nessa doação.", Toast.LENGTH_SHORT).show();
+        }
+
+        doacaoAdapter.notifyDataSetChanged();
     }
 }

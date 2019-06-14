@@ -24,6 +24,10 @@ import com.tabembota.doaacao.fragment.ConfiguracoesFragment;
 import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
+import com.tabembota.doaacao.model.Doacao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PrincipalActivity extends AppCompatActivity
@@ -37,6 +41,9 @@ public class PrincipalActivity extends AppCompatActivity
     private SalvosFragment salvosFragment = new SalvosFragment();
     private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
     private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
+
+    //Variáveis quaisquer
+    public List<Doacao> listaSalvos = new ArrayList<>();
 
     private String name = "", email = "";
 
