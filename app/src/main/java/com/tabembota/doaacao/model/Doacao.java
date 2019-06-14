@@ -1,6 +1,5 @@
 package com.tabembota.doaacao.model;
 
-import java.util.Date;
 
 public class Doacao{
 
@@ -19,6 +18,8 @@ public class Doacao{
         this.imagem = imagem;
         this.filtro = filtro;
     }
+
+    public Doacao(){}
 
     public String getUser_id() {
         return user_id;

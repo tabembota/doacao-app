@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tabembota.doaacao.R;
+import com.tabembota.doaacao.activity.PrincipalActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SalvosFragment extends Fragment {
 
+    private PrincipalActivity principalActivity = ((PrincipalActivity) getActivity());
 
     public SalvosFragment() {
         // Required empty public constructor
@@ -32,5 +34,8 @@ public class SalvosFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        principalActivity.mudarTitulo("Doações salvas");
+
     }
 }

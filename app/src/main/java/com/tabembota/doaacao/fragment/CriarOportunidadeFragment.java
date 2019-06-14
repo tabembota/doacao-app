@@ -4,7 +4,6 @@ package com.tabembota.doaacao.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -12,13 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.R;
-import com.tabembota.doaacao.activity.ListaDoacoesActivity;
+import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
@@ -86,6 +84,8 @@ public class CriarOportunidadeFragment extends Fragment {
                 }
             }
         });
+
+        ((PrincipalActivity) getActivity()).mudarTitulo("Criar oportunidade");
     }
 
     public void criarOportunidade(){
@@ -120,8 +120,8 @@ public class CriarOportunidadeFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
 
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    PrincipalFragment principalFragment = ListaDoacoesActivity.getPrincipalFragment();
-                    ft.replace(R.id.frameLayoutMain, principalFragment);
+                    ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
+                    ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
                     ft.commit();
 
                 }
