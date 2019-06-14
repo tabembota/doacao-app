@@ -21,12 +21,13 @@
                 android:layout_width="111dp"
                 android:layout_height="107dp"
                 android:layout_margin="5dp"
+                android:background="@drawable/fundo_titulo_doacao"
                 app:srcCompat="@mipmap/logo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"
+                android:background="@drawable/fundo_titulo_doacao"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="5dp">
@@ -36,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/common_google_signin_btn_text_dark_default"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -45,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="#EEEEEE" />
             </LinearLayout>
 
         </LinearLayout>
@@ -54,10 +55,10 @@
             android:id="@+id/textoData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
+            android:background="@drawable/fundo_tipo_doacao"
             android:padding="5dp"
             android:text="TextView"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/background_light"
             android:textSize="16sp"
             android:textStyle="bold" />
 
