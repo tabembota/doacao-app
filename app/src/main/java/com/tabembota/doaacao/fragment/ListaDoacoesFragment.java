@@ -90,7 +90,7 @@ public class ListaDoacoesFragment extends Fragment {
         super.onStart();
         exibirProgress(true);
         recuperarDadosListaDeDoacoes();
-        fechaProgressAposTempo(100000);
+        fechaProgressAposTempo(10000);
     }
 
     @Override
