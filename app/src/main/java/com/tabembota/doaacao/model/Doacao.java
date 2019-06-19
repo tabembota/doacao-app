@@ -3,11 +3,12 @@ package com.tabembota.doaacao.model;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Doacao implements Comparable<Doacao>{
+public class Doacao implements Comparable<Doacao>, Serializable {
 
     private String user_id;
     private String titulo;

@@ -1,6 +1,7 @@
 package com.tabembota.doaacao.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.RecyclerItemClickListener;
+import com.tabembota.doaacao.activity.DoacaoActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
@@ -155,8 +157,10 @@ public class ListaDoacoesFragment extends Fragment {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                //Intent i
-                                Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(getContext(), DoacaoActivity.class);
+                                i.putExtra("DOACAO", listaDoacao.get(position));
+                                startActivity(i);
+                                //Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
