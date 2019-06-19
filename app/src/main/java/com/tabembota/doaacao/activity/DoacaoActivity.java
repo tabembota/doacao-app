@@ -17,7 +17,7 @@ import java.util.Date;
 public class DoacaoActivity extends AppCompatActivity {
 
     Doacao doacao;
-    TextView titulo, descricao, local, data, link;
+    TextView textTitulo, textDescricao, textLocal, textData, textLink;
     ImageView image;
 
     @Override
@@ -27,19 +27,22 @@ public class DoacaoActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         doacao = (Doacao) getIntent().getSerializableExtra("DOACAO");
 
-        titulo = findViewById(R.id.textViewDoacaoTitulo);
-        descricao = findViewById(R.id.textViewDoacaoDescricao);
-        local = findViewById(R.id.textViewDoacaoLocal);
-        data = findViewById(R.id.textViewDoacaoData);
-        link = findViewById(R.id.textViewDoacaoLink);
+        textTitulo = findViewById(R.id.textViewDoacaoTitulo);
+        textDescricao = findViewById(R.id.textViewDoacaoDescricao);
+        textLocal = findViewById(R.id.textViewDoacaoLocal);
+        textData = findViewById(R.id.textViewDoacaoData);
+        textLink = findViewById(R.id.textViewDoacaoLink);
         image = findViewById(R.id.imageViewDoacaoFoto);
 
-        titulo.setText(doacao.getTitulo());
-        descricao.setText(doacao.getDescricao());
-        local.setText(doacao.getEmail());
-        data.setText((new Date(doacao.getData())).toString());
+        textTitulo.setText(doacao.getTitulo());
+        textDescricao.setText(doacao.getDescricao());
+        textLocal.setText(doacao.getEmail());
+        textData.setText((new Date(doacao.getData())).toString());
         //link.setText(doacao.getFiltro());
         image.setImageResource(doacao.getImagem());
 
