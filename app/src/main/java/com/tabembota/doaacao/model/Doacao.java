@@ -4,21 +4,18 @@ package com.tabembota.doaacao.model;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Doacao implements Comparable<Doacao>, Serializable {
 
     private String user_id;
+    private String op_id;
     private String titulo;
     private String descricao;
     private String email;
     private int imagem;
     private int filtro;
     private long data;
-
-
 
     public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro) {
         this.user_id = user_id;
@@ -88,7 +85,15 @@ public class Doacao implements Comparable<Doacao>, Serializable {
         this.data = data;
     }
 
+    public String getOp_id() {
+        return op_id;
+    }
 
+    public void setOp_id(String op_id) {
+        this.op_id = op_id;
+    }
+
+    @Exclude
     @Override
     public int compareTo(Doacao o) {
         if(this.getData() > o.getData())

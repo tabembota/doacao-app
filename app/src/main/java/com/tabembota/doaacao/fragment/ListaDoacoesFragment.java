@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.RecyclerItemClickListener;
 import com.tabembota.doaacao.activity.DoacaoActivity;
@@ -38,6 +40,7 @@ import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 import com.tabembota.doaacao.model.Doacao;
+import com.tabembota.doaacao.model.Interesse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -313,8 +316,6 @@ public class ListaDoacoesFragment extends Fragment {
                 return false;
             }
 
-            //esquerda: não interessado
-            //direita: salvar
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 if(i == ItemTouchHelper.START || i == ItemTouchHelper.END){
@@ -334,24 +335,47 @@ public class ListaDoacoesFragment extends Fragment {
         if (!((PrincipalActivity) getActivity()).listaSalvos.contains(doacao)) {
             ((PrincipalActivity) getActivity()).listaSalvos.add(doacao);
 
+            final Interesse interesse = new Interesse();
+            interesse.setOp_id(doacao.getOp_id());
+            interesse.setUser_id(doacao.getUser_id());
+            interesse.setTime_stamp(0);
+            interesse.setStopped_at(1);
+
             //Salvar no firebase
-            DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference();
-            interesseRef = interesseRef.child("interesse");
+            final DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
+
+            DatabaseReference interesseRefValue = interesseRef.push();
+
+            final String interesse_id = interesseRefValue.getKey();
+
+            interesseRefValue.setValue(interesse);
 
             Snackbar.make(viewHolder.itemView, "Interesse marcado com sucesso!", Snackbar.LENGTH_LONG)
                     .setAction("Desfazer", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            listaDoacao.remove(doacao);
+                            ((PrincipalActivity) getActivity()).listaSalvos.remove(doacao);
+
+                            interesseRef.child(interesse_id).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    dataSnapshot.getRef().removeValue();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                             Toast.makeText(getActivity(), "Desfeito.", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setActionTextColor(getResources().getColor(R.color.colorPrimary))
                     .show();
         }
-        else{
+        else
             Toast.makeText(getActivity(), "Você já marcou interesse nessa doação.", Toast.LENGTH_SHORT).show();
-        }
 
         doacaoAdapter.notifyDataSetChanged();
     }

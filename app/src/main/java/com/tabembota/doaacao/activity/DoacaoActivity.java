@@ -43,7 +43,6 @@ public class DoacaoActivity extends AppCompatActivity {
         textDescricao.setText(doacao.getDescricao());
         textLocal.setText(doacao.getEmail());
         textData.setText((new Date(doacao.getData())).toString());
-        //link.setText(doacao.getFiltro());
         image.setImageResource(doacao.getImagem());
 
     }
