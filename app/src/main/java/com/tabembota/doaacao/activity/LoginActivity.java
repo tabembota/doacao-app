@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                                     excecao = "E-mail e senha não correspondem a um usuário válido.";
                                 }
                                 catch(Exception e){
-                                    excecao = "Erro ao cadastrar usuário: " + e.getMessage();
+                                    excecao = "Erro ao logar usuário: " + e.getMessage();
                                     e.printStackTrace();
                                 }
                                 Toast.makeText(LoginActivity.this,

@@ -154,9 +154,11 @@ public class CriarOportunidadeFragment extends Fragment {
                     );
 
                     DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference();
-                    referencia.child("oportunidade")
-                            .push()
-                            .setValue(doacao);
+                    referencia = referencia.child("oportunidade").push();
+
+                    doacao.setOp_id(referencia.getKey());
+
+                    referencia.setValue(doacao);
 
                     Toast.makeText(getContext(),
                             "Oportunidade de doação criada com sucesso! Você receberá um e-mail de confirmação em breve (ainda não).",
