@@ -12,12 +12,10 @@ import android.view.ViewGroup;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class SalvosFragment extends Fragment {
+public class ConfiguracoesFragment extends Fragment {
 
-    public SalvosFragment() {
+
+    public ConfiguracoesFragment() {
         // Required empty public constructor
     }
 
@@ -26,14 +24,13 @@ public class SalvosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_salvos, container, false);
+        return inflater.inflate(R.layout.fragment_configuracoes, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((PrincipalActivity) getActivity()).mudarTitulo("Doações salvas");
-
+        ((PrincipalActivity) getActivity()).mudarTitulo("Configurações");
     }
 }

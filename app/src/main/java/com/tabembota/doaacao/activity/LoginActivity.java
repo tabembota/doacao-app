@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,6 +34,30 @@ public class LoginActivity extends AppCompatActivity {
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputSenha = findViewById(R.id.textInputSenha);
 
+        textInputEmail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    textInputEmail.clearFocus();
+                    textInputSenha.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        textInputSenha.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    View viewActivity = findViewById(android.R.id.content);
+                    login(viewActivity);
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -56,12 +80,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean validarLogin(String email, String senha){
-        if(!email.isEmpty() && email.contains("@")){
-            if(!senha.isEmpty() && senha.length() > 6){
+        if(!email.isEmpty()){
+            if(!senha.isEmpty()){
                 return true;
             }
             else{
-                Toast.makeText(this, "Insira uma senha válida.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Insira sua senha.", Toast.LENGTH_SHORT).show();
             }
         }
         else{
@@ -132,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                 name = data.getStringExtra("CADASTRO_NOME");
                 //senha = data.getStringExtra("CADASTRO_SENHA");
 
-                Intent intent = new Intent(LoginActivity.this, ListaDoacoesActivity.class);
+                Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
                 intent.putExtra("LOGIN_EMAIL", email);
                 intent.putExtra("LOGIN_NAME", name);
                 startActivity(intent);
@@ -142,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void iniciarTelaPrincipal(String nome, String email){
-        Intent intent = new Intent(LoginActivity.this, ListaDoacoesActivity.class);
+        Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
         intent.putExtra("LOGIN_EMAIL", email);
         intent.putExtra("LOGIN_NAME", nome);
         startActivity(intent);

@@ -1,25 +1,42 @@
 package com.tabembota.doaacao.model;
 
+
+import com.google.firebase.database.Exclude;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Doacao{
+public class Doacao implements Comparable<Doacao>{
 
+    private String user_id;
     private String titulo;
     private String descricao;
+    private String email;
     private int imagem;
-    private String local;
-    private String tipo;
-    private String link;
-    private Date data;
+    private int filtro;
+    private long data;
 
-    public Doacao(String titulo, String descricao, int imagem, String local, String tipo, String link, Date data) {
+
+
+    public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro) {
+        this.user_id = user_id;
         this.titulo = titulo;
         this.descricao = descricao;
+        this.email = email;
         this.imagem = imagem;
-        this.local = local;
-        this.tipo = tipo;
-        this.link = link;
-        this.data = data;
+        this.filtro = filtro;
+        this.data = new Date().getTime();
+    }
+
+    public Doacao(){}
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getTitulo() {
@@ -38,6 +55,14 @@ public class Doacao{
         this.descricao = descricao;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public int getImagem() {
         return imagem;
     }
@@ -46,35 +71,29 @@ public class Doacao{
         this.imagem = imagem;
     }
 
-    public String getLocal() {
-        return local;
+    public int getFiltro() {
+        return filtro;
     }
 
-    public void setLocal(String local) {
-        this.local = local;
+    public void setFiltro(int filtro) {
+        this.filtro = filtro;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public Date getData() {
+    public long getData(){
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(long data){
         this.data = data;
+    }
+
+
+    @Override
+    public int compareTo(Doacao o) {
+        if(this.getData() > o.getData())
+            return 1;
+        else if (this.getData() == o.getData())
+            return 0;
+        return -1;
     }
 }

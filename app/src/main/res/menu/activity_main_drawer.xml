@@ -6,24 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/lista_doacoes"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="Lista de doações"
             />
         <item
             android:id="@+id/itens_salvos"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_salvo_black_24dp"
             android:title="Salvos" />
         <item
-            android:id="@+id/filtrar_itens"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Filtros" />
+            android:id="@+id/criar_oportunidade"
+            android:icon="@drawable/ic_adicionar_black_24dp"
+            android:title="Criar oportunidade" />
         <item
             android:id="@+id/configuracoes"
             android:icon="@drawable/ic_menu_manage"
             android:title="Configurações" />
         <item
             android:id="@+id/sair"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_sair_black_24dp"
             android:title="Sair" />
     </group>
 
