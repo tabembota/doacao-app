@@ -96,6 +96,7 @@ public class PrincipalActivity extends AppCompatActivity
         //Atualiza Navigation Drawer
         //Obtém dados passados pelo intent
         Bundle bundle = getIntent().getExtras();
+        //Extras iram existir se for a primeira o login chamar essa activity
         if (bundle != null){
             String name = bundle.getString("LOGIN_NAME");
             String email = bundle.getString("LOGIN_EMAIL");
@@ -109,11 +110,13 @@ public class PrincipalActivity extends AppCompatActivity
             textViewNavEmail.setText(email);
             textViewNavName.setText(name);
         }
+        //Caso contrario, a atividade será chamada de uma sub atividade (como detalhes doacao) e nao irá ter extras
         else{
+            /*
             Toast.makeText(this,
                     "Um erro aconteceu ao atualizar o nome e o email. Tente novamente.",
                     Toast.LENGTH_SHORT).show();
-            finish();
+            finish();*/
         }
 
         recuperarListaSalvos();
