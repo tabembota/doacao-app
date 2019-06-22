@@ -149,7 +149,7 @@ public class CriarOportunidadeFragment extends Fragment {
                             titulo,
                             descricao,
                             email,
-                            R.drawable.logo,
+                            R.mipmap.logo,
                             tagescolhida
                     );
 
