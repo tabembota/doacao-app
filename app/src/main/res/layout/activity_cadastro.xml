@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fundo_claro"
     tools:context=".activity.CadastroActivity">
 
     <android.support.design.widget.TextInputLayout
@@ -101,10 +102,13 @@
         android:id="@+id/button"
         android:layout_width="347dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/colorPrimary"
         android:onClick="cadastrarUsuario"
         android:text="Cadastrar"
+        android:textColor="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
