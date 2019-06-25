@@ -112,6 +112,8 @@ public class PrincipalActivity extends AppCompatActivity
                     Toast.LENGTH_SHORT).show();
             finish();*/
         }
+
+        Log.d("MISSGAY", ""+R.mipmap.logo);
     }
 
     @Override
@@ -215,7 +217,6 @@ public class PrincipalActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
             ft.commit();
-
         }
         else if (id == R.id.itens_salvos) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

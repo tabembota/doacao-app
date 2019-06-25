@@ -46,8 +46,6 @@ public class SalvosFragment extends Fragment {
 
         configurarRecyclerView();
 
-        Log.d("MISSGAY", PrincipalActivity.listaSalvos.toString());
-
     }
 
     void configurarRecyclerView(){

@@ -39,9 +39,16 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
 
         Doacao doacao = listaDoacoes.get(i);
 
+        String desc = doacao.getDescricao();
+
+        if (desc.length() > 70){
+            desc = desc.substring(0, 70);
+            desc += "...";
+        }
+
         myViewHolder.imagemDoacao.setImageResource(doacao.getImagem());
         myViewHolder.textoTitulo.setText(doacao.getTitulo());
-        myViewHolder.textoDescricao.setText(doacao.getDescricao());
+        myViewHolder.textoDescricao.setText(desc);
 
         int filtro = doacao.getFiltro();
         String filtro_s = "Sem tags";

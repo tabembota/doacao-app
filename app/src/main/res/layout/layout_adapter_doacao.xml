@@ -23,7 +23,8 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_margin="0dp"
-                android:background="@drawable/fundo_filtros"
+                android:background="@color/colorPrimaryLight"
+                android:padding="8dp"
                 app:srcCompat="@mipmap/logo" />
 
             <LinearLayout

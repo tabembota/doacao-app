@@ -13,12 +13,6 @@
     tools:layout_editor_absoluteY="15dp"
     tools:showIn="@layout/activity_doacao">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/fundo_claro"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,28 +36,6 @@
                 android:text="Nome Doação"
                 android:textSize="30sp" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView4">
-
-        <ImageView
-            android:id="@+id/imageViewDoacaoFoto"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_margin="10dp"
-            android:layout_weight="2"
-            app:srcCompat="@drawable/logo" />
-
-        <TextView
-            android:id="@+id/textViewDoacaoTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:text="Nome Doação"
-            android:textSize="30sp" />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/textView4"

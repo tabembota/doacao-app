@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -122,6 +122,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
                 android:text="Roupas" />
+
         </RadioGroup>
 
         <Button
@@ -131,11 +132,12 @@
             android:layout_marginLeft="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="32dp"
-            android:layout_marginBottom="32dp"
-            android:background="@color/colorPrimary"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorPrimary"
             android:onClick="criarOportunidade"
             android:text="Criar"
-            android:textColor="@color/common_google_signin_btn_text_dark_default" />
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
