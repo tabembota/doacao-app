@@ -3,21 +3,19 @@ package com.tabembota.doaacao.model;
 
 import com.google.firebase.database.Exclude;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Doacao implements Comparable<Doacao>{
+public class Doacao implements Comparable<Doacao>, Serializable {
 
     private String user_id;
+    private String op_id;
     private String titulo;
     private String descricao;
     private String email;
     private int imagem;
     private int filtro;
     private long data;
-
-
 
     public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro) {
         this.user_id = user_id;
@@ -87,7 +85,15 @@ public class Doacao implements Comparable<Doacao>{
         this.data = data;
     }
 
+    public String getOp_id() {
+        return op_id;
+    }
 
+    public void setOp_id(String op_id) {
+        this.op_id = op_id;
+    }
+
+    @Exclude
     @Override
     public int compareTo(Doacao o) {
         if(this.getData() > o.getData())
@@ -95,5 +101,19 @@ public class Doacao implements Comparable<Doacao>{
         else if (this.getData() == o.getData())
             return 0;
         return -1;
+    }
+
+    @Exclude
+    public boolean igual_a(Doacao teste){
+        return (
+               this.getTitulo().equals(    teste.getTitulo()    )
+            && this.getOp_id().equals(     teste.getOp_id()     )
+            && this.getDescricao().equals( teste.getDescricao() )
+            && this.getUser_id().equals(   teste.getUser_id()   )
+            && this.getEmail().equals(     teste.getEmail()     )
+            && this.getImagem()   ==       teste.getImagem()
+            && this.getData()     ==       teste.getData()
+            && this.getFiltro()   ==       teste.getFiltro()
+        );
     }
 }

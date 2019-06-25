@@ -1,6 +1,7 @@
 package com.tabembota.doaacao.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,16 +31,28 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.RecyclerItemClickListener;
+import com.tabembota.doaacao.activity.DoacaoActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.EnviarEmail;
+import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
+import com.tabembota.doaacao.model.Interesse;
+import com.tabembota.doaacao.model.Usuario;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListaDoacoesFragment extends Fragment {
     //Recycler view e seus capangas
@@ -57,6 +70,14 @@ public class ListaDoacoesFragment extends Fragment {
 
     //Variáveis quaisquer
     private int recuperouDados = 0;
+    private String nomeNecessitado;
+    private String emailNecessitado;
+    private Call<Integer> call;
+    private EnviarEmail service;
+
+    //Uso de API
+    private Retrofit retrofit;
+    private String urlAPI = "https://us-central1-doacao-fa8a7.cloudfunctions.net/";
 
     public ListaDoacoesFragment() {
         // Required empty public constructor
@@ -83,6 +104,13 @@ public class ListaDoacoesFragment extends Fragment {
         //Configurando RecyclerView
         configurarRecyclerView();
         swipe();
+
+        //Retrofit
+        retrofit = new Retrofit.Builder()
+                .baseUrl(urlAPI)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
     }
 
     @Override
@@ -90,7 +118,7 @@ public class ListaDoacoesFragment extends Fragment {
         super.onStart();
         exibirProgress(true);
         recuperarDadosListaDeDoacoes();
-        fechaProgressAposTempo(10000);
+        fechaProgressAposTempo(5000);
     }
 
     @Override
@@ -155,8 +183,10 @@ public class ListaDoacoesFragment extends Fragment {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                //Intent i
-                                Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(getContext(), DoacaoActivity.class);
+                                i.putExtra("DOACAO", listaDoacao.get(position));
+                                startActivity(i);
+                                //Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -309,8 +339,6 @@ public class ListaDoacoesFragment extends Fragment {
                 return false;
             }
 
-            //esquerda: não interessado
-            //direita: salvar
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 if(i == ItemTouchHelper.START || i == ItemTouchHelper.END){
@@ -323,31 +351,119 @@ public class ListaDoacoesFragment extends Fragment {
 
     }
 
+    private void enviarEmail(String assuntoBruto, String corpo, String idUsuarioNecessitado){
+        final String email = UsuarioFirebase.getUsuarioAtual().getEmail();
+        final String assunto = "DoAção: ".concat(assuntoBruto);
+
+        service = retrofit.create(EnviarEmail.class);
+
+        call = service.enviarEmail(email, assunto, corpo);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+        DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference().child("user").child(idUsuarioNecessitado);
+        referencia.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Usuario necessitado = dataSnapshot.getValue(Usuario.class);
+                nomeNecessitado = necessitado.getNome();
+                emailNecessitado = necessitado.getEmail();
+
+                String resposta = "Parabéns, " + nomeNecessitado + "! Você possui uma nova pessoa doadora interessada: " +
+                        UsuarioFirebase.getDadosUsuarioLogado().getNome() + ". Entre em contato com ela para combinarem tudo entre si!";
+
+                call = service.enviarEmail(emailNecessitado, assunto, resposta);
+                call.enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private boolean checarSeDoacaoEstaInteressada(Doacao alvo){
+        for (Doacao teste : PrincipalActivity.listaSalvos){
+            if(alvo.igual_a(teste)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void salvarOportunidade(RecyclerView.ViewHolder viewHolder){
 
         int position = viewHolder.getAdapterPosition();
         final Doacao doacao = listaDoacao.get(position);
-        if (!((PrincipalActivity) getActivity()).listaSalvos.contains(doacao)) {
-            ((PrincipalActivity) getActivity()).listaSalvos.add(doacao);
+
+        if (!checarSeDoacaoEstaInteressada(doacao)) {
+
+            final Interesse interesse = new Interesse();
+            interesse.setOp_id(doacao.getOp_id());
+            interesse.setUser_id(doacao.getUser_id());
+            interesse.setTime_stamp(0);
+            interesse.setStopped_at(1);
+
+            enviarEmail(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id());
 
             //Salvar no firebase
-            DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference();
-            interesseRef = interesseRef.child("interesse");
+            final DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
+
+            DatabaseReference interesseRefValue = interesseRef.push();
+
+            final String interesse_id = interesseRefValue.getKey();
+
+            interesseRefValue.setValue(interesse);
 
             Snackbar.make(viewHolder.itemView, "Interesse marcado com sucesso!", Snackbar.LENGTH_LONG)
                     .setAction("Desfazer", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            listaDoacao.remove(doacao);
+                            PrincipalActivity.listaSalvos.remove(doacao);
+
+                            interesseRef.child(interesse_id).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    dataSnapshot.getRef().removeValue();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                             Toast.makeText(getActivity(), "Desfeito.", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setActionTextColor(getResources().getColor(R.color.colorPrimary))
                     .show();
         }
-        else{
+        else
             Toast.makeText(getActivity(), "Você já marcou interesse nessa doação.", Toast.LENGTH_SHORT).show();
-        }
 
         doacaoAdapter.notifyDataSetChanged();
     }

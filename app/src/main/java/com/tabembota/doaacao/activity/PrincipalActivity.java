@@ -3,8 +3,10 @@ package com.tabembota.doaacao.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,22 +15,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 import com.tabembota.doaacao.fragment.ConfiguracoesFragment;
 import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
 import com.tabembota.doaacao.fragment.SalvosFragment;
+import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
+import com.tabembota.doaacao.model.Interesse;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class PrincipalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,10 +48,12 @@ public class PrincipalActivity extends AppCompatActivity
     private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
     private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
 
-    //Variáveis quaisquer
-    public List<Doacao> listaSalvos = new ArrayList<>();
+    //Firebase
+    private DatabaseReference referenciaSalvos = ConfiguracaoFirebase.getDatabaseReference();
+    private ChildEventListener recuperarSalvosEventListener;
 
-    private String name = "", email = "";
+    //Variáveis quaisquer
+    public static List<Doacao> listaSalvos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +90,10 @@ public class PrincipalActivity extends AppCompatActivity
         //Atualiza Navigation Drawer
         //Obtém dados passados pelo intent
         Bundle bundle = getIntent().getExtras();
+        //Extras iram existir se for a primeira o login chamar essa activity
         if (bundle != null){
-            name = bundle.getString("LOGIN_NAME");
-            email = bundle.getString("LOGIN_EMAIL");
+            String name = bundle.getString("LOGIN_NAME");
+            String email = bundle.getString("LOGIN_EMAIL");
 
             //Obtém view referente ao nav_header_main do navigation drawer
             View view = navigationView.getHeaderView(0);
@@ -95,13 +104,90 @@ public class PrincipalActivity extends AppCompatActivity
             textViewNavEmail.setText(email);
             textViewNavName.setText(name);
         }
+        //Caso contrario, a atividade será chamada de uma sub atividade (como detalhes doacao) e nao irá ter extras
         else{
+            /*
             Toast.makeText(this,
                     "Um erro aconteceu ao atualizar o nome e o email. Tente novamente.",
                     Toast.LENGTH_SHORT).show();
-            finish();
+            finish();*/
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarListaSalvos();
+    }
+
+    private void recuperarListaSalvos(){
+        listaSalvos.clear();
+
+        referenciaSalvos = referenciaSalvos.child("interesse");
+        recuperarSalvosEventListener = referenciaSalvos.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                final Interesse interesse = dataSnapshot.getValue(Interesse.class);
+                //Log.d("MISSGAY", interesse.getUser_id() + " " + interesse.getOp_id() + " " + interesse.getStopped_at());
+
+                if(interesse.getUser_id().equals(UsuarioFirebase.getUsuarioAtual().getUid())){
+                    DatabaseReference oportunidadeRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
+
+                    oportunidadeRef.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Doacao doacao = dataSnapshot.getValue(Doacao.class);
+                            if(doacao.getOp_id().equals(interesse.getOp_id())){
+                                listaSalvos.add(doacao);
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            Doacao doacao = dataSnapshot.getValue(Doacao.class);
+                            if(doacao.getOp_id().equals(interesse.getOp_id())){
+                                listaSalvos.remove(doacao);
+                            }
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("DatabaseError", "Erro: " + databaseError.toString());
+            }
+        });
     }
 
     @Override
@@ -114,7 +200,12 @@ public class PrincipalActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    protected void onStop() {
+        super.onStop();
+        referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

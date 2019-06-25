@@ -12,7 +12,11 @@
         <activity
             android:name=".activity.DoacaoActivity"
             android:label="@string/title_activity_doacao"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.PrincipalActivity" />
+        </activity>
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
