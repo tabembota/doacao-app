@@ -91,6 +91,7 @@ public class CadastroActivity extends AppCompatActivity {
                     //(usaremos os dados dele depois)
                     try{
                         UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
+                        usuario.setIdUsuario(UsuarioFirebase.getIdentificadorUsuario());
                         usuario.salvar(UsuarioFirebase.getUsuarioAtual());
                     }
                     catch (Exception e){

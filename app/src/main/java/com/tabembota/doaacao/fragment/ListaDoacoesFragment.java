@@ -33,10 +33,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
-import com.tabembota.doaacao.RecyclerItemClickListener;
+import com.tabembota.doaacao.helper.RecyclerItemClickListener;
 import com.tabembota.doaacao.activity.DoacaoActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
-import com.tabembota.doaacao.adapter.DoacaoAdapter;
+import com.tabembota.doaacao.adapter.AdapterDoacao;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 import com.tabembota.doaacao.helper.EnviarEmail;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
@@ -58,12 +58,13 @@ public class ListaDoacoesFragment extends Fragment {
     //Recycler view e seus capangas
     private RecyclerView recyclerViewListaDoacoes;
     private List<Doacao> listaDoacao = new ArrayList<>();
-    private DoacaoAdapter doacaoAdapter;
+    private AdapterDoacao adapterDoacao;
     private ProgressBar progressBar;
 
     //Firebase
     private ChildEventListener recuperarOportunidadesEventListener;
     private DatabaseReference oportunidadesRef;
+    private Usuario usuarioApp = UsuarioFirebase.getDadosUsuarioLogado();
 
     //Filtros
     private ArrayList<Integer> filtroEscolhido = new ArrayList<>();
@@ -134,15 +135,18 @@ public class ListaDoacoesFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Doacao doacao = dataSnapshot.getValue(Doacao.class);
-                if(filtroEscolhido.isEmpty() || filtroEscolhido.contains(doacao.getFiltro())){
-                    listaDoacao.add(doacao);
+                if(!doacao.getUser_id().equals(usuarioApp.getIdUsuario())){
+                    if(filtroEscolhido.isEmpty() || filtroEscolhido.contains(doacao.getFiltro())){
+                        listaDoacao.add(doacao);
+                    }
+
+                    Collections.sort(listaDoacao);
+
+                    adapterDoacao.notifyDataSetChanged();
+                    recuperouDados = 1;
+                    exibirProgress(false);
                 }
 
-                Collections.sort(listaDoacao);
-
-                doacaoAdapter.notifyDataSetChanged();
-                recuperouDados = 1;
-                exibirProgress(false);
             }
 
             @Override
@@ -173,8 +177,8 @@ public class ListaDoacoesFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewListaDoacoes.setLayoutManager(layoutManager);
 
-        doacaoAdapter = new DoacaoAdapter(listaDoacao, getContext());
-        recyclerViewListaDoacoes.setAdapter(doacaoAdapter);
+        adapterDoacao = new AdapterDoacao(listaDoacao, getContext());
+        recyclerViewListaDoacoes.setAdapter(adapterDoacao);
 
         recyclerViewListaDoacoes.addOnItemTouchListener(
                 new RecyclerItemClickListener(
@@ -352,7 +356,7 @@ public class ListaDoacoesFragment extends Fragment {
     }
 
     private void enviarEmail(String assuntoBruto, String corpo, String idUsuarioNecessitado){
-        final String email = UsuarioFirebase.getUsuarioAtual().getEmail();
+        final String email = usuarioApp.getEmail();
         final String assunto = "DoAção: ".concat(assuntoBruto);
 
         service = retrofit.create(EnviarEmail.class);
@@ -423,7 +427,7 @@ public class ListaDoacoesFragment extends Fragment {
 
             final Interesse interesse = new Interesse();
             interesse.setOp_id(doacao.getOp_id());
-            interesse.setUser_id(doacao.getUser_id());
+            interesse.setUser_id(usuarioApp.getIdUsuario());
             interesse.setTime_stamp(0);
             interesse.setStopped_at(1);
 
@@ -465,6 +469,6 @@ public class ListaDoacoesFragment extends Fragment {
         else
             Toast.makeText(getActivity(), "Você já marcou interesse nessa doação.", Toast.LENGTH_SHORT).show();
 
-        doacaoAdapter.notifyDataSetChanged();
+        adapterDoacao.notifyDataSetChanged();
     }
 }

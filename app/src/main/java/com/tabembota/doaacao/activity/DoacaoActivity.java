@@ -18,9 +18,9 @@ import java.util.Locale;
 
 public class DoacaoActivity extends AppCompatActivity {
 
-    Doacao doacao;
-    TextView textTitulo, textDescricao, textData;
-    ImageView image;
+    private Doacao doacao;
+    private TextView textTitulo, textDescricao, textData;
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

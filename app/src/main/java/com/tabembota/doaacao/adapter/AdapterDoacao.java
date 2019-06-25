@@ -14,12 +14,12 @@ import com.tabembota.doaacao.model.Doacao;
 
 import java.util.List;
 
-public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHolder> {
+public class AdapterDoacao extends RecyclerView.Adapter<AdapterDoacao.MyViewHolder> {
 
     private List<Doacao> listaDoacoes;
     private Context context;
 
-    public DoacaoAdapter(List<Doacao> listaDoacoes, Context context) {
+    public AdapterDoacao(List<Doacao> listaDoacoes, Context context) {
         this.listaDoacoes = listaDoacoes;
         this.context = context;
     }
@@ -80,8 +80,8 @@ public class DoacaoAdapter extends RecyclerView.Adapter<DoacaoAdapter.MyViewHold
             super(itemView);
 
             imagemDoacao = itemView.findViewById(R.id.imagemDoacao);
-            textoTitulo = itemView.findViewById(R.id.textoTitulo);
-            textoDescricao = itemView.findViewById(R.id.textoDescricao);
+            textoTitulo = itemView.findViewById(R.id.textNome);
+            textoDescricao = itemView.findViewById(R.id.textEmail);
             textoTag = itemView.findViewById(R.id.textoTag);
 
         }

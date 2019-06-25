@@ -61,6 +61,7 @@ public class UsuarioFirebase {
         final Usuario usuario = new Usuario();
         usuario.setEmail(firebaseUser.getEmail());
         usuario.setNome(firebaseUser.getDisplayName());
+        usuario.setIdUsuario(firebaseUser.getUid());
 
         usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

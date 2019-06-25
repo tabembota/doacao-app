@@ -1,11 +1,16 @@
 package com.tabembota.doaacao.activity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.fragment.ChatDoadoresFragment;
 import com.tabembota.doaacao.fragment.ConfiguracoesFragment;
 import com.tabembota.doaacao.fragment.CriarOportunidadeFragment;
 import com.tabembota.doaacao.fragment.ListaDoacoesFragment;
@@ -32,6 +38,7 @@ import com.tabembota.doaacao.fragment.SalvosFragment;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
 import com.tabembota.doaacao.model.Interesse;
+import com.tabembota.doaacao.model.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,18 +54,29 @@ public class PrincipalActivity extends AppCompatActivity
     private SalvosFragment salvosFragment = new SalvosFragment();
     private ConfiguracoesFragment configuracoesFragment = new ConfiguracoesFragment();
     private CriarOportunidadeFragment criarOportunidadeFragment = new CriarOportunidadeFragment();
+    private ChatDoadoresFragment chatDoadoresFragment = new ChatDoadoresFragment();
 
     //Firebase
     private DatabaseReference referenciaSalvos = ConfiguracaoFirebase.getDatabaseReference();
     private ChildEventListener recuperarSalvosEventListener;
+    private ChildEventListener childEventListenerDoacoes;
+    private ChildEventListener childEventNovosInteresses;
+    private Usuario usuarioApp = UsuarioFirebase.getDadosUsuarioLogado();
+    private DatabaseReference doacoesRef;
+    private DatabaseReference interessesNotifRef;
 
     //Variáveis quaisquer
     public static List<Doacao> listaSalvos = new ArrayList<>();
+    public static List<Doacao> listaDoacoes = new ArrayList<>();
+    private static String CHANNEL_ID = "NOTIFICACAO_INTERESSADOS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
+        //Criando canal da notificação
+        createNotificationChannel();
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -113,13 +131,27 @@ public class PrincipalActivity extends AppCompatActivity
             finish();*/
         }
 
-        Log.d("MISSGAY", ""+R.mipmap.logo);
+        notificarNovosInteresses();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         recuperarListaSalvos();
+        recuperaListaDoacoes();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
+        doacoesRef.removeEventListener(childEventListenerDoacoes);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        interessesNotifRef.removeEventListener(childEventNovosInteresses);
     }
 
     private void recuperarListaSalvos(){
@@ -130,9 +162,8 @@ public class PrincipalActivity extends AppCompatActivity
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 final Interesse interesse = dataSnapshot.getValue(Interesse.class);
-                //Log.d("MISSGAY", interesse.getUser_id() + " " + interesse.getOp_id() + " " + interesse.getStopped_at());
 
-                if(interesse.getUser_id().equals(UsuarioFirebase.getUsuarioAtual().getUid())){
+                if(interesse.getUser_id().equals(usuarioApp.getIdUsuario())){
                     DatabaseReference oportunidadeRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
 
                     oportunidadeRef.addChildEventListener(new ChildEventListener() {
@@ -192,6 +223,42 @@ public class PrincipalActivity extends AppCompatActivity
         });
     }
 
+    private void recuperaListaDoacoes(){
+        listaDoacoes.clear();
+
+        doacoesRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
+        childEventListenerDoacoes = doacoesRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Doacao doacao = dataSnapshot.getValue(Doacao.class);
+                if(doacao.getUser_id().equals(usuarioApp.getIdUsuario())){
+                    listaDoacoes.add(doacao);
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -200,12 +267,6 @@ public class PrincipalActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
     }
 
     @Override
@@ -225,6 +286,10 @@ public class PrincipalActivity extends AppCompatActivity
         } else if (id == R.id.criar_oportunidade){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayoutMain, criarOportunidadeFragment);
+            ft.commit();
+        } else if(id == R.id.chat_doadores){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayoutMain, chatDoadoresFragment);
             ft.commit();
         } else if (id == R.id.configuracoes) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -262,5 +327,69 @@ public class PrincipalActivity extends AppCompatActivity
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
+    }
+
+    private void notificarNovosInteresses(){
+
+        interessesNotifRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
+        childEventNovosInteresses = interessesNotifRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Interesse interesse = dataSnapshot.getValue(Interesse.class);
+
+                for(Doacao doacao : listaDoacoes){
+                    if(interesse.getOp_id().equals(doacao.getOp_id())){
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                .setSmallIcon(R.drawable.ic_stars_white_24dp)
+                                .setContentTitle("Doação: " + doacao.getTitulo())
+                                .setContentText("Há novos interessados em sua doação!")
+                                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+
+                        // notificationId is a unique int for each notification that you must define
+                        notificationManager.notify(0, builder.build());
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

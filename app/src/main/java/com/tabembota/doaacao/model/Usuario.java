@@ -4,11 +4,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
     private String nome;
     private String email;
     private String bairro;
     private int avatar = 0;
+    private String idUsuario;
 
     public Usuario() {
     }
@@ -48,5 +51,13 @@ public class Usuario {
 
     public void setAvatar(int avatar) {
         this.avatar = avatar;
+    }
+
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }

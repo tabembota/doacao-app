@@ -1,28 +1,36 @@
 package com.tabembota.doaacao.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
-import com.tabembota.doaacao.RecyclerItemClickListener;
+import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.RecyclerItemClickListener;
+import com.tabembota.doaacao.activity.ChatActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
-import com.tabembota.doaacao.adapter.DoacaoAdapter;
+import com.tabembota.doaacao.adapter.AdapterDoacao;
+import com.tabembota.doaacao.model.Doacao;
+import com.tabembota.doaacao.model.Usuario;
 
 
 public class SalvosFragment extends Fragment {
 
     private RecyclerView recyclerViewSalvos;
-    private DoacaoAdapter doacaoAdapter;
+    private AdapterDoacao adapterDoacao;
 
     public SalvosFragment() {
         // Required empty public constructor
@@ -53,8 +61,8 @@ public class SalvosFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewSalvos.setLayoutManager(layoutManager);
 
-        doacaoAdapter = new DoacaoAdapter(PrincipalActivity.listaSalvos, getActivity());
-        recyclerViewSalvos.setAdapter(doacaoAdapter);
+        adapterDoacao = new AdapterDoacao(PrincipalActivity.listaSalvos, getActivity());
+        recyclerViewSalvos.setAdapter(adapterDoacao);
 
         recyclerViewSalvos.addOnItemTouchListener(
                 new RecyclerItemClickListener(
@@ -63,7 +71,25 @@ public class SalvosFragment extends Fragment {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
+                                final Doacao doacao = PrincipalActivity.listaSalvos.get(position);
 
+                                DatabaseReference usuarioRef = ConfiguracaoFirebase.getDatabaseReference().child("user").child(doacao.getUser_id());
+                                usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Usuario usuario = dataSnapshot.getValue(Usuario.class);
+
+                                        Intent i = new Intent(getContext(), ChatActivity.class);
+                                        //i.putExtra("DOACAO", doacao);
+                                        i.putExtra("USUARIO", usuario);
+                                        startActivity(i);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
 
                             @Override

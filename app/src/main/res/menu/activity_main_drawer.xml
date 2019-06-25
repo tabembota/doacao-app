@@ -18,6 +18,11 @@
             android:icon="@drawable/ic_adicionar_black_24dp"
             android:title="Criar oportunidade" />
         <item
+            android:id="@+id/chat_doadores"
+            android:icon="@drawable/ic_message_branco_24dp"
+            android:title="Conversar com doadores"
+            />
+        <item
             android:id="@+id/configuracoes"
             android:icon="@drawable/ic_menu_manage"
             android:title="Configurações" />

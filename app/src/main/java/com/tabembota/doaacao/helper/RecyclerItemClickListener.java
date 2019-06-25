@@ -1,4 +1,4 @@
-package com.tabembota.doaacao;
+package com.tabembota.doaacao.helper;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
