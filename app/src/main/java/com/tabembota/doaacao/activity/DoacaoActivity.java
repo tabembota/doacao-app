@@ -37,6 +37,7 @@ public class DoacaoActivity extends AppCompatActivity {
         textTitulo = findViewById(R.id.textViewDoacaoTitulo);
         textDescricao = findViewById(R.id.textViewDoacaoDescricao);
         textData = findViewById(R.id.textViewDoacaoData);
+        image = findViewById(R.id.imagemDoacao);
 
         textTitulo.setText(doacao.getTitulo());
         textDescricao.setText(doacao.getDescricao());
@@ -46,7 +47,6 @@ public class DoacaoActivity extends AppCompatActivity {
         textData.setText(data);
 
         image.setImageResource(doacao.getImagem());
-
     }
 
 }
