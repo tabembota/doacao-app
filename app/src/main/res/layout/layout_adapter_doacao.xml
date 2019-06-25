@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,16 +20,16 @@
 
             <ImageView
                 android:id="@+id/imagemDoacao"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/fundo_titulo_doacao"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="0dp"
+                android:background="@drawable/fundo_filtros"
                 app:srcCompat="@mipmap/logo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/fundo_titulo_doacao"
+                android:background="@color/colorPrimaryLight"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="5dp">
@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/common_google_signin_btn_text_dark_default"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="#EEEEEE" />
+                    android:textColor="@color/colorPrimaryDark" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -57,10 +58,11 @@
             android:id="@+id/textoTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/fundo_tipo_doacao"
+            android:background="@color/colorPrimaryLight"
             android:padding="5dp"
             android:text="TextView"
-            android:textColor="@android:color/background_light"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorAccent"
             android:textSize="16sp"
             android:textStyle="bold" />
 

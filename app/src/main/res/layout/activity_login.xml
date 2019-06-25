@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="275dp"
+        android:layout_height="98dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="64dp"
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@mipmap/logo" />
+        app:srcCompat="@mipmap/logo_word" />
 
     <TextView
         android:id="@+id/textView2"
