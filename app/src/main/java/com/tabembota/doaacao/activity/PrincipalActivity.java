@@ -3,7 +3,6 @@ package com.tabembota.doaacao.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -18,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,9 +35,6 @@ import com.tabembota.doaacao.model.Interesse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import static java.util.Objects.*;
 
 
 public class PrincipalActivity extends AppCompatActivity

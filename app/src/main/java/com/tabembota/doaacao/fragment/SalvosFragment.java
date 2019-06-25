@@ -17,15 +17,8 @@ import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.RecyclerItemClickListener;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
-import com.tabembota.doaacao.model.Doacao;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SalvosFragment extends Fragment {
 
     private RecyclerView recyclerViewSalvos;

@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,12 +38,21 @@ import com.tabembota.doaacao.activity.DoacaoActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.DoacaoAdapter;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.EnviarEmail;
+import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
 import com.tabembota.doaacao.model.Interesse;
+import com.tabembota.doaacao.model.Usuario;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListaDoacoesFragment extends Fragment {
     //Recycler view e seus capangas
@@ -62,6 +70,14 @@ public class ListaDoacoesFragment extends Fragment {
 
     //Variáveis quaisquer
     private int recuperouDados = 0;
+    private String nomeNecessitado;
+    private String emailNecessitado;
+    private Call<Integer> call;
+    private EnviarEmail service;
+
+    //Uso de API
+    private Retrofit retrofit;
+    private String urlAPI = "https://us-central1-doacao-fa8a7.cloudfunctions.net/";
 
     public ListaDoacoesFragment() {
         // Required empty public constructor
@@ -88,6 +104,13 @@ public class ListaDoacoesFragment extends Fragment {
         //Configurando RecyclerView
         configurarRecyclerView();
         swipe();
+
+        //Retrofit
+        retrofit = new Retrofit.Builder()
+                .baseUrl(urlAPI)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
     }
 
     @Override
@@ -328,10 +351,64 @@ public class ListaDoacoesFragment extends Fragment {
 
     }
 
+    private void enviarEmail(String assuntoBruto, String corpo, String idUsuarioNecessitado){
+        final String email = UsuarioFirebase.getUsuarioAtual().getEmail();
+        final String assunto = "DoAção: ".concat(assuntoBruto);
+
+        service = retrofit.create(EnviarEmail.class);
+
+        call = service.enviarEmail(email, assunto, corpo);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+        DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference().child("user").child(idUsuarioNecessitado);
+        referencia.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Usuario necessitado = dataSnapshot.getValue(Usuario.class);
+                nomeNecessitado = necessitado.getNome();
+                emailNecessitado = necessitado.getEmail();
+
+                String resposta = "Parabéns, " + nomeNecessitado + "! Você possui uma nova pessoa doadora interessada: " +
+                        UsuarioFirebase.getDadosUsuarioLogado().getNome() + ". Entre em contato com ela para combinarem tudo entre si!";
+
+                call = service.enviarEmail(emailNecessitado, assunto, resposta);
+                call.enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void salvarOportunidade(RecyclerView.ViewHolder viewHolder){
 
         int position = viewHolder.getAdapterPosition();
         final Doacao doacao = listaDoacao.get(position);
+
         if (!((PrincipalActivity) getActivity()).listaSalvos.contains(doacao)) {
             ((PrincipalActivity) getActivity()).listaSalvos.add(doacao);
 
@@ -340,6 +417,8 @@ public class ListaDoacoesFragment extends Fragment {
             interesse.setUser_id(doacao.getUser_id());
             interesse.setTime_stamp(0);
             interesse.setStopped_at(1);
+
+            enviarEmail(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id());
 
             //Salvar no firebase
             final DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
