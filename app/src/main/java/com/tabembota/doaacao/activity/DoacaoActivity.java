@@ -12,12 +12,14 @@ import android.widget.TextView;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.model.Doacao;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DoacaoActivity extends AppCompatActivity {
 
     Doacao doacao;
-    TextView textTitulo, textDescricao, textLocal, textData, textLink;
+    TextView textTitulo, textDescricao, textData;
     ImageView image;
 
     @Override
@@ -34,15 +36,16 @@ public class DoacaoActivity extends AppCompatActivity {
 
         textTitulo = findViewById(R.id.textViewDoacaoTitulo);
         textDescricao = findViewById(R.id.textViewDoacaoDescricao);
-        textLocal = findViewById(R.id.textViewDoacaoLocal);
         textData = findViewById(R.id.textViewDoacaoData);
-        textLink = findViewById(R.id.textViewDoacaoLink);
         image = findViewById(R.id.imageViewDoacaoFoto);
 
         textTitulo.setText(doacao.getTitulo());
         textDescricao.setText(doacao.getDescricao());
-        textLocal.setText(doacao.getEmail());
-        textData.setText((new Date(doacao.getData())).toString());
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        String data = format.format(doacao.getData());
+        textData.setText(data);
+
         image.setImageResource(doacao.getImagem());
 
     }

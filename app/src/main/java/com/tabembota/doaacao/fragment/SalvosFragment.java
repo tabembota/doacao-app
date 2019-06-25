@@ -42,11 +42,11 @@ public class SalvosFragment extends Fragment {
 
         recyclerViewSalvos = view.findViewById(R.id.recyclerViewSalvos);
 
-        configurarRecyclerView();
-
         ((PrincipalActivity) getActivity()).mudarTitulo("Doações salvas");
 
-        Log.d("MISSGAY", ((PrincipalActivity) getActivity()).listaSalvos.toString());
+        configurarRecyclerView();
+
+        Log.d("MISSGAY", PrincipalActivity.listaSalvos.toString());
 
     }
 
@@ -55,7 +55,7 @@ public class SalvosFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewSalvos.setLayoutManager(layoutManager);
 
-        doacaoAdapter = new DoacaoAdapter(((PrincipalActivity) getActivity()).listaSalvos, getActivity());
+        doacaoAdapter = new DoacaoAdapter(PrincipalActivity.listaSalvos, getActivity());
         recyclerViewSalvos.setAdapter(doacaoAdapter);
 
         recyclerViewSalvos.addOnItemTouchListener(

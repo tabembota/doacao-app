@@ -102,4 +102,18 @@ public class Doacao implements Comparable<Doacao>, Serializable {
             return 0;
         return -1;
     }
+
+    @Exclude
+    public boolean igual_a(Doacao teste){
+        return (
+               this.getTitulo().equals(    teste.getTitulo()    )
+            && this.getOp_id().equals(     teste.getOp_id()     )
+            && this.getDescricao().equals( teste.getDescricao() )
+            && this.getUser_id().equals(   teste.getUser_id()   )
+            && this.getEmail().equals(     teste.getEmail()     )
+            && this.getImagem()   ==       teste.getImagem()
+            && this.getData()     ==       teste.getData()
+            && this.getFiltro()   ==       teste.getFiltro()
+        );
+    }
 }

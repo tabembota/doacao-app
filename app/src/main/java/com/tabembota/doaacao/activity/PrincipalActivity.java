@@ -36,7 +36,6 @@ import com.tabembota.doaacao.model.Interesse;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PrincipalActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,7 +53,7 @@ public class PrincipalActivity extends AppCompatActivity
     private ChildEventListener recuperarSalvosEventListener;
 
     //Variáveis quaisquer
-    public List<Doacao> listaSalvos = new ArrayList<>();
+    public static List<Doacao> listaSalvos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,25 +112,52 @@ public class PrincipalActivity extends AppCompatActivity
                     Toast.LENGTH_SHORT).show();
             finish();*/
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         recuperarListaSalvos();
-
     }
 
     private void recuperarListaSalvos(){
+        listaSalvos.clear();
+
         referenciaSalvos = referenciaSalvos.child("interesse");
         recuperarSalvosEventListener = referenciaSalvos.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Interesse interesse = dataSnapshot.getValue(Interesse.class);
-                Log.d("MISSGAY", interesse.getUser_id() + " " + interesse.getOp_id() + " " + interesse.getStopped_at());
+                final Interesse interesse = dataSnapshot.getValue(Interesse.class);
+                //Log.d("MISSGAY", interesse.getUser_id() + " " + interesse.getOp_id() + " " + interesse.getStopped_at());
+
                 if(interesse.getUser_id().equals(UsuarioFirebase.getUsuarioAtual().getUid())){
                     DatabaseReference oportunidadeRef = ConfiguracaoFirebase.getDatabaseReference().child("oportunidade");
-                    oportunidadeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    oportunidadeRef.addChildEventListener(new ChildEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                             Doacao doacao = dataSnapshot.getValue(Doacao.class);
-                            listaSalvos.add(doacao);
+                            if(doacao.getOp_id().equals(interesse.getOp_id())){
+                                listaSalvos.add(doacao);
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            Doacao doacao = dataSnapshot.getValue(Doacao.class);
+                            if(doacao.getOp_id().equals(interesse.getOp_id())){
+                                listaSalvos.remove(doacao);
+                            }
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
                         }
 
                         @Override
@@ -180,7 +206,6 @@ public class PrincipalActivity extends AppCompatActivity
         referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

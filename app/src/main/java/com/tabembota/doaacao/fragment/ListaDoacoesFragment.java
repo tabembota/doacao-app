@@ -118,7 +118,7 @@ public class ListaDoacoesFragment extends Fragment {
         super.onStart();
         exibirProgress(true);
         recuperarDadosListaDeDoacoes();
-        fechaProgressAposTempo(100000);
+        fechaProgressAposTempo(5000);
     }
 
     @Override
@@ -404,13 +404,22 @@ public class ListaDoacoesFragment extends Fragment {
 
     }
 
+    private boolean checarSeDoacaoEstaInteressada(Doacao alvo){
+        for (Doacao teste : PrincipalActivity.listaSalvos){
+            if(alvo.igual_a(teste)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void salvarOportunidade(RecyclerView.ViewHolder viewHolder){
 
         int position = viewHolder.getAdapterPosition();
         final Doacao doacao = listaDoacao.get(position);
 
-        if (!((PrincipalActivity) getActivity()).listaSalvos.contains(doacao)) {
-            ((PrincipalActivity) getActivity()).listaSalvos.add(doacao);
+        if (!checarSeDoacaoEstaInteressada(doacao)) {
 
             final Interesse interesse = new Interesse();
             interesse.setOp_id(doacao.getOp_id());
@@ -433,7 +442,7 @@ public class ListaDoacoesFragment extends Fragment {
                     .setAction("Desfazer", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ((PrincipalActivity) getActivity()).listaSalvos.remove(doacao);
+                            PrincipalActivity.listaSalvos.remove(doacao);
 
                             interesseRef.child(interesse_id).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
