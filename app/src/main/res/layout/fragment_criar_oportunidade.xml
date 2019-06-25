@@ -66,6 +66,16 @@
                 android:hint="E-mail resposta aos interessados" />
         </android.support.design.widget.TextInputLayout>
 
+        <EditText
+            android:id="@+id/editTextData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:ems="10"
+            android:hint="Data limite"
+            android:inputType="datetime" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"

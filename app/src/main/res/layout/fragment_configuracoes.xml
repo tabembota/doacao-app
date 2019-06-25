@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingBottom="15dp"
         tools:context=".fragment.ConfiguracoesFragment">
 
         <TextView
@@ -55,6 +56,17 @@
             android:text="Senha (deixe em branco para manter inalterado)" />
 
         <EditText
+            android:id="@+id/textSenhaAntiga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:hint="Antiga senha"
+            android:inputType="textPassword" />
+
+        <EditText
             android:id="@+id/textNovaSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,17 +86,6 @@
             android:layout_marginBottom="16dp"
             android:ems="10"
             android:hint="Reescreva a nova senha"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/textSenhaAntiga"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginBottom="16dp"
-            android:ems="10"
-            android:hint="Antiga senha"
             android:inputType="textPassword" />
 
         <Button

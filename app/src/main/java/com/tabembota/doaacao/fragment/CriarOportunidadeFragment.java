@@ -22,13 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.Mask;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
 
 
 public class CriarOportunidadeFragment extends Fragment {
 
-    private EditText editTextTitulo, editTextDescricao, editTextEmail;
+    private EditText editTextTitulo, editTextDescricao, editTextEmail, editTextData;
     private RadioGroup rgTag;
     private Button btCriar;
     private NavigationView navigationView;
@@ -65,6 +66,9 @@ public class CriarOportunidadeFragment extends Fragment {
         editTextTitulo = view.findViewById(R.id.editTextTitulo);
         editTextDescricao = view.findViewById(R.id.editTextDescricao);
         editTextEmail = view.findViewById(R.id.editTextEmail);
+        editTextData = view.findViewById(R.id.editTextData);
+
+        editTextData.addTextChangedListener(Mask.insert("##/##/####", editTextData));
 
         navigationView = getActivity().findViewById(R.id.nav_view);
 
@@ -121,6 +125,18 @@ public class CriarOportunidadeFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     editTextEmail.clearFocus();
+                    editTextData.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextData.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    editTextData.clearFocus();
                     rgTag.requestFocus();
                     return true;
                 }
@@ -135,48 +151,58 @@ public class CriarOportunidadeFragment extends Fragment {
         String titulo;
         String descricao;
         String email;
+        String data;
 
         titulo = editTextTitulo.getText().toString();
         descricao = editTextDescricao.getText().toString();
         email = editTextEmail.getText().toString();
+        data = editTextData.getText().toString();
 
-        if(!titulo.isEmpty()){
+        if(!titulo.isEmpty() && titulo.length() < 22){
             if(!descricao.isEmpty()){
                 if(!email.isEmpty()){
+                    if(!data.isEmpty()){
 
-                    Doacao doacao = new Doacao(
-                            UsuarioFirebase.getUsuarioAtual().getUid(),
-                            titulo,
-                            descricao,
-                            email,
-                            R.mipmap.logo,
-                            tagescolhida
-                    );
+                        fecharTeclado();
 
-                    DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference();
-                    referencia = referencia.child("oportunidade").push();
+                        Doacao doacao = new Doacao(
+                                UsuarioFirebase.getUsuarioAtual().getUid(),
+                                titulo,
+                                descricao,
+                                email,
+                                R.mipmap.logo,
+                                tagescolhida,
+                                data
+                        );
 
-                    doacao.setOp_id(referencia.getKey());
+                        DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference();
+                        referencia = referencia.child("oportunidade").push();
 
-                    referencia.setValue(doacao);
+                        doacao.setOp_id(referencia.getKey());
 
-                    Toast.makeText(getContext(),
-                            "Oportunidade de doação criada com sucesso!",
-                            Toast.LENGTH_SHORT).show();
+                        referencia.setValue(doacao);
 
-                    navigationView.setCheckedItem(R.id.lista_doacoes);
+                        Toast.makeText(getContext(),
+                                "Oportunidade de doação criada com sucesso!",
+                                Toast.LENGTH_SHORT).show();
 
-                    editTextTitulo.setText("");
-                    editTextDescricao.setText("");
-                    editTextEmail.setText("");
-                    rgTag.check(R.id.rbVoluntariado);
+                        navigationView.setCheckedItem(R.id.lista_doacoes);
 
-                    fecharTeclado();
+                        editTextTitulo.setText("");
+                        editTextDescricao.setText("");
+                        editTextEmail.setText("");
+                        rgTag.check(R.id.rbVoluntariado);
 
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
-                    ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
-                    ft.commit();
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ListaDoacoesFragment listaDoacoesFragment = PrincipalActivity.getListaDoacoesFragment();
+                        ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
+                        ft.commit();
+                    }
+                    else{
+                        Toast.makeText(getContext(),
+                                "Insira uma data limite.",
+                                Toast.LENGTH_SHORT).show();
+                    }
 
                 }
                 else{
@@ -193,7 +219,7 @@ public class CriarOportunidadeFragment extends Fragment {
         }
         else{
             Toast.makeText(getContext(),
-                    "Insira um título.",
+                    "Insira um título de até 22 caracteres.",
                     Toast.LENGTH_SHORT).show();
         }
     }

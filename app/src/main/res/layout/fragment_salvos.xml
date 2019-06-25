@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/fundo_claro"
     android:orientation="vertical"
+    android:paddingTop="10dp"
     tools:context=".fragment.SalvosFragment">
 
     <android.support.v7.widget.RecyclerView

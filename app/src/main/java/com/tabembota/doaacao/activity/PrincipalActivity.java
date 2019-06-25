@@ -68,6 +68,8 @@ public class PrincipalActivity extends AppCompatActivity
     //Variáveis quaisquer
     public static List<Doacao> listaSalvos = new ArrayList<>();
     public static List<Doacao> listaDoacoes = new ArrayList<>();
+    private List<Interesse> listaInteresses = new ArrayList<>();
+
     private static String CHANNEL_ID = "NOTIFICACAO_INTERESSADOS";
 
     @Override
@@ -113,14 +115,7 @@ public class PrincipalActivity extends AppCompatActivity
             String name = bundle.getString("LOGIN_NAME");
             String email = bundle.getString("LOGIN_EMAIL");
 
-            //Obtém view referente ao nav_header_main do navigation drawer
-            View view = navigationView.getHeaderView(0);
-            //Apontando para os TextViews em questão
-            textViewNavEmail = view.findViewById(R.id.textViewNavEmail);
-            textViewNavName = view.findViewById(R.id.textViewNavName);
 
-            textViewNavEmail.setText(email);
-            textViewNavName.setText(name);
         }
         //Caso contrario, a atividade será chamada de uma sub atividade (como detalhes doacao) e nao irá ter extras
         else{
@@ -131,26 +126,35 @@ public class PrincipalActivity extends AppCompatActivity
             finish();*/
         }
 
+        //Obtém view referente ao nav_header_main do navigation drawer
+        View view = navigationView.getHeaderView(0);
+        //Apontando para os TextViews em questão
+        textViewNavEmail = view.findViewById(R.id.textViewNavEmail);
+        textViewNavName = view.findViewById(R.id.textViewNavName);
+
+        textViewNavEmail.setText(usuarioApp.getEmail());
+        textViewNavName.setText(usuarioApp.getNome());
+
+        recuperarListaSalvos();
         notificarNovosInteresses();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        recuperarListaSalvos();
         recuperaListaDoacoes();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
         doacoesRef.removeEventListener(childEventListenerDoacoes);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        referenciaSalvos.removeEventListener(recuperarSalvosEventListener);
         interessesNotifRef.removeEventListener(childEventNovosInteresses);
     }
 
@@ -265,7 +269,14 @@ public class PrincipalActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(!listaDoacoesFragment.isAdded()){
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frameLayoutMain, listaDoacoesFragment);
+                ft.commit();
+            }
+            else{
+                super.onBackPressed();
+            }
         }
     }
 
@@ -330,15 +341,29 @@ public class PrincipalActivity extends AppCompatActivity
     }
 
     private void notificarNovosInteresses(){
-
         interessesNotifRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
+
+        interessesNotifRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaInteresses.add(dataSnapshot.getValue(Interesse.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         childEventNovosInteresses = interessesNotifRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Interesse interesse = dataSnapshot.getValue(Interesse.class);
 
                 for(Doacao doacao : listaDoacoes){
-                    if(interesse.getOp_id().equals(doacao.getOp_id())){
+                    if(interesse.getOp_id().equals(doacao.getOp_id()) && !listaInteresses.contains(interesse)){
+                        listaInteresses.add(interesse);
+
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                                 .setSmallIcon(R.drawable.ic_stars_white_24dp)
                                 .setContentTitle("Doação: " + doacao.getTitulo())

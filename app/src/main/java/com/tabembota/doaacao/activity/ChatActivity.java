@@ -73,7 +73,6 @@ public class ChatActivity extends AppCompatActivity {
         //Recuperar dados do usuário destinatário do intent
         Usuario usuarioDestinatario = (Usuario) getIntent().getSerializableExtra("USUARIO");
         idUsuarioDestinatario = usuarioDestinatario.getIdUsuario();
-        Log.d("MISSGAY", idUsuarioDestinatario);
 
         //Configurações iniciais
         textViewNome = findViewById(R.id.textViewNomeChat);

@@ -56,6 +56,13 @@ public class SalvosFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        adapterDoacao.notifyDataSetChanged();
+    }
+
     void configurarRecyclerView(){
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());

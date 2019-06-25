@@ -15,16 +15,18 @@ public class Doacao implements Comparable<Doacao>, Serializable {
     private String email;
     private int imagem;
     private int filtro;
-    private long data;
+    private String data;
+    private long datacriacao;
 
-    public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro) {
+    public Doacao(String user_id, String titulo, String descricao, String email, int imagem, int filtro, String data) {
         this.user_id = user_id;
         this.titulo = titulo;
         this.descricao = descricao;
         this.email = email;
         this.imagem = imagem;
         this.filtro = filtro;
-        this.data = new Date().getTime();
+        this.data = data;
+        this.datacriacao = new Date().getTime();
     }
 
     public Doacao(){}
@@ -77,12 +79,20 @@ public class Doacao implements Comparable<Doacao>, Serializable {
         this.filtro = filtro;
     }
 
-    public long getData(){
+    public String getData() {
         return data;
     }
 
-    public void setData(long data){
+    public void setData(String data) {
         this.data = data;
+    }
+
+    public long getDatacriacao() {
+        return datacriacao;
+    }
+
+    public void setDatacriacao(long datacriacao) {
+        this.datacriacao = datacriacao;
     }
 
     public String getOp_id() {
@@ -96,9 +106,9 @@ public class Doacao implements Comparable<Doacao>, Serializable {
     @Exclude
     @Override
     public int compareTo(Doacao o) {
-        if(this.getData() > o.getData())
+        if(this.getDatacriacao() > o.getDatacriacao())
             return 1;
-        else if (this.getData() == o.getData())
+        else if (this.getDatacriacao() == o.getDatacriacao())
             return 0;
         return -1;
     }
@@ -112,7 +122,7 @@ public class Doacao implements Comparable<Doacao>, Serializable {
             && this.getUser_id().equals(   teste.getUser_id()   )
             && this.getEmail().equals(     teste.getEmail()     )
             && this.getImagem()   ==       teste.getImagem()
-            && this.getData()     ==       teste.getData()
+            && this.getData().equals(      teste.getData()      )
             && this.getFiltro()   ==       teste.getFiltro()
         );
     }

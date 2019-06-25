@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.model.Doacao;
+import com.tabembota.doaacao.model.Usuario;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +20,8 @@ import java.util.Locale;
 public class DoacaoActivity extends AppCompatActivity {
 
     private Doacao doacao;
-    private TextView textTitulo, textDescricao, textData;
+    private Usuario usuario;
+    private TextView textTitulo, textDescricao, textData, textLocal;
     private ImageView image;
 
     @Override
@@ -33,18 +35,20 @@ public class DoacaoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         doacao = (Doacao) getIntent().getSerializableExtra("DOACAO");
+        usuario = (Usuario) getIntent().getSerializableExtra("USUARIO");
+
+        getSupportActionBar().setTitle(doacao.getTitulo());
 
         textTitulo = findViewById(R.id.textViewDoacaoTitulo);
         textDescricao = findViewById(R.id.textViewDoacaoDescricao);
         textData = findViewById(R.id.textViewDoacaoData);
+        textLocal = findViewById(R.id.textViewLocal);
         image = findViewById(R.id.imagemDoacao);
 
         textTitulo.setText(doacao.getTitulo());
         textDescricao.setText(doacao.getDescricao());
-
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        String data = format.format(doacao.getData());
-        textData.setText(data);
+        textData.setText(doacao.getData());
+        textLocal.setText(usuario.getBairro());
 
         image.setImageResource(doacao.getImagem());
     }

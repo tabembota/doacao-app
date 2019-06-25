@@ -61,7 +61,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
-        android:text="Data de criação"
+        android:text="Data limite de doação"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -71,5 +71,22 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="18/04/2019" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Bairro de doação"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Centro" />
 
 </LinearLayout>

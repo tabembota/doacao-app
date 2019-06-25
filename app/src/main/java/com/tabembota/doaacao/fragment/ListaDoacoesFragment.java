@@ -187,10 +187,29 @@ public class ListaDoacoesFragment extends Fragment {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                Intent i = new Intent(getContext(), DoacaoActivity.class);
-                                i.putExtra("DOACAO", listaDoacao.get(position));
-                                startActivity(i);
-                                //Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
+                                final Doacao doacao = listaDoacao.get(position);
+
+                                DatabaseReference usuariosRef = ConfiguracaoFirebase.getDatabaseReference()
+                                        .child("user")
+                                        .child(doacao.getUser_id());
+
+                                usuariosRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Usuario usuario = dataSnapshot.getValue(Usuario.class);
+
+                                        Intent i = new Intent(getContext(), DoacaoActivity.class);
+                                        i.putExtra("DOACAO", doacao);
+                                        i.putExtra("USUARIO", usuario);
+                                        startActivity(i);
+                                        //Toast.makeText(getContext(), "Potato", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
 
                             @Override
