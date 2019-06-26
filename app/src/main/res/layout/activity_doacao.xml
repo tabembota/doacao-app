@@ -20,7 +20,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_doacao" />
+    <include
+        layout="@layout/content_doacao"
+        android:background="@drawable/fundo_claro" />
 
 
 </android.support.design.widget.CoordinatorLayout>

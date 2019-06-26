@@ -10,7 +10,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewListaDoacoes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/common_google_signin_btn_text_dark_default" />
 
     <ProgressBar
         android:id="@+id/progressBar"
