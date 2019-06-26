@@ -320,7 +320,6 @@ public class PrincipalActivity extends AppCompatActivity
         return true;
     }
 
-
     public static ListaDoacoesFragment getListaDoacoesFragment(){
         return listaDoacoesFragment;
     }
@@ -342,11 +341,13 @@ public class PrincipalActivity extends AppCompatActivity
 
     private void notificarNovosInteresses(){
         interessesNotifRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");
-
         interessesNotifRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaInteresses.add(dataSnapshot.getValue(Interesse.class));
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    Interesse interesse = data.getValue(Interesse.class);
+                    listaInteresses.add(interesse);
+                }
             }
 
             @Override
@@ -362,6 +363,7 @@ public class PrincipalActivity extends AppCompatActivity
 
                 for(Doacao doacao : listaDoacoes){
                     if(interesse.getOp_id().equals(doacao.getOp_id()) && !listaInteresses.contains(interesse)){
+
                         listaInteresses.add(interesse);
 
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
@@ -376,8 +378,6 @@ public class PrincipalActivity extends AppCompatActivity
                         notificationManager.notify(0, builder.build());
                     }
                 }
-
-
             }
 
             @Override

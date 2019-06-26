@@ -87,7 +87,7 @@ public class SalvosFragment extends Fragment {
                                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
                                         Intent i = new Intent(getContext(), ChatActivity.class);
-                                        //i.putExtra("DOACAO", doacao);
+                                        i.putExtra("DOACAO", doacao);
                                         i.putExtra("USUARIO", usuario);
                                         startActivity(i);
                                     }

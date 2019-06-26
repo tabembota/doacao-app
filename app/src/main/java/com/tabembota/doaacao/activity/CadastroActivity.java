@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.tabembota.doaacao.R;
 import com.tabembota.doaacao.helper.Base64Custom;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
+import com.tabembota.doaacao.helper.EnviarEmail;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Usuario;
 
@@ -27,6 +29,8 @@ public class CadastroActivity extends AppCompatActivity {
     private TextInputEditText textInputNome, textInputEmail, textInputSenha, textInputBairro;
     private FirebaseAuth usuarioRef = ConfiguracaoFirebase.getFirebaseAuth();
     private Usuario usuario;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class CadastroActivity extends AppCompatActivity {
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputSenha = findViewById(R.id.textInputSenha);
         textInputBairro = findViewById(R.id.textInputBairro);
+
+        progressBar = findViewById(R.id.progressBar);
 
     }
 
@@ -72,6 +78,8 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     private void autenticaUsuario(String nome, String email, String senha, String bairro){
+        progressBar.setVisibility(View.VISIBLE);
+
         usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setEmail(email);
@@ -91,12 +99,22 @@ public class CadastroActivity extends AppCompatActivity {
                     //(usaremos os dados dele depois)
                     try{
                         UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
-                        usuario.setIdUsuario(UsuarioFirebase.getIdentificadorUsuario());
+                        usuario.setIdUsuario(UsuarioFirebase.getUsuarioAtual().getUid());
                         usuario.salvar(UsuarioFirebase.getUsuarioAtual());
+
+                        String assunto = "Bem vindx!";
+                        String corpo = "Estamos muito felizes em anunciar que a partir de agora, você, " + usuario.getNome() + ", é um "+
+                                "usuário cadastrado no DoAção, um aplicativo voltado para ajudar entidades que trabalham com caridade. " +
+                                "Nossa missão é transformar a caridade algo fácil de se realizar, por meio da visibilidade " +
+                                "das oportunidades existentes. Não deixe para depois: comece a doar hoje mesmo!\n\nEquipe TaBemBota";
+
+                        EnviarEmail.enviarEmail(assunto, corpo, usuario);
                     }
                     catch (Exception e){
                         e.printStackTrace();
                     }
+
+                    progressBar.setVisibility(View.GONE);
 
                     //Mensagem de sucesso e fechamento da activity
                     Toast.makeText(CadastroActivity.this,

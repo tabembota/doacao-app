@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tabembota.doaacao.R;
+import com.tabembota.doaacao.model.Doacao;
 import com.tabembota.doaacao.model.Usuario;
 
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.List;
 public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyViewHolder> {
 
     private List<Usuario> listaUsuarios;
+    private List<Doacao> listaDoacaoInteresseUsuario;
     private Context context;
 
-    public AdapterUsuarios(List<Usuario> listaUsuarios, Context context) {
+    public AdapterUsuarios(List<Usuario> listaUsuarios, List<Doacao> listaNomeDoacaoInteresseUsuario, Context context) {
         this.listaUsuarios = listaUsuarios;
+        this.listaDoacaoInteresseUsuario = listaNomeDoacaoInteresseUsuario;
         this.context = context;
     }
 
@@ -37,9 +40,11 @@ public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyView
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
 
         Usuario usuario = listaUsuarios.get(i);
+        Doacao doacao = listaDoacaoInteresseUsuario.get(i);
 
         myViewHolder.email.setText(usuario.getEmail());
         myViewHolder.nome.setText(usuario.getNome());
+        myViewHolder.doacao.setText(doacao.getTitulo());
 
     }
 
@@ -50,13 +55,14 @@ public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView nome, email;
+        TextView nome, email, doacao;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             nome = itemView.findViewById(R.id.textNome);
             email = itemView.findViewById(R.id.textEmail);
+            doacao = itemView.findViewById(R.id.textDoacao);
         }
     }
 }

@@ -39,6 +39,7 @@ public class ChatDoadoresFragment extends Fragment {
     private RecyclerView recyclerViewDoadores;
     private AdapterUsuarios adapterUsuarios;
     private List<Usuario> listaUsuarios = new ArrayList<>();
+    private List<Doacao> listaDoacaoInteresseUsuario = new ArrayList<>();
 
     //Firebase
     private ChildEventListener childEventListenerInteresses;
@@ -65,23 +66,17 @@ public class ChatDoadoresFragment extends Fragment {
 
         recyclerViewDoadores = view.findViewById(R.id.recyclerViewDoadores);
 
+        recuperaUsuariosDoadores();
         configurarRecyclerView();
 
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        recuperaUsuariosDoadores();
-    }
+    public void onDestroy() {
+        super.onDestroy();
 
-    @Override
-    public void onStop() {
-        super.onStop();
         interessesRef.removeEventListener(childEventListenerInteresses);
     }
-
-
 
     private void recuperaUsuariosDoadores(){
         listaUsuarios.clear();
@@ -91,8 +86,9 @@ public class ChatDoadoresFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 final Interesse interesse = dataSnapshot.getValue(Interesse.class);
-                for(Doacao doacao : PrincipalActivity.listaDoacoes){
-                    if(interesse.getOp_id().equals(doacao.getOp_id()) && !interesse.getUser_id().equals(usuarioApp.getIdUsuario())){
+                //Log.d("MISSGAY", interesse.getUser_id());
+                for(final Doacao doacao : PrincipalActivity.listaDoacoes){
+                    if(interesse.getOp_id().equals(doacao.getOp_id())){
 
                         DatabaseReference usuariosRef = ConfiguracaoFirebase.getDatabaseReference().child("user").child(interesse.getUser_id());
 
@@ -100,11 +96,10 @@ public class ChatDoadoresFragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                                if(usuario.getIdUsuario().equals(interesse.getUser_id())){
 
-                                    listaUsuarios.add(usuario);
-                                    adapterUsuarios.notifyDataSetChanged();
-                                }
+                                listaDoacaoInteresseUsuario.add(doacao);
+                                listaUsuarios.add(usuario);
+                                adapterUsuarios.notifyDataSetChanged();
                             }
 
                             @Override
@@ -142,7 +137,7 @@ public class ChatDoadoresFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerViewDoadores.setLayoutManager(layoutManager);
 
-        adapterUsuarios = new AdapterUsuarios(listaUsuarios, getContext());
+        adapterUsuarios = new AdapterUsuarios(listaUsuarios, listaDoacaoInteresseUsuario, getContext());
         recyclerViewDoadores.setAdapter(adapterUsuarios);
 
         recyclerViewDoadores.addOnItemTouchListener(
@@ -153,9 +148,11 @@ public class ChatDoadoresFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
                                 Usuario usuario = listaUsuarios.get(position);
+                                Doacao doacao = listaDoacaoInteresseUsuario.get(position);
 
                                 Intent i = new Intent(getContext(), ChatActivity.class);
                                 i.putExtra("USUARIO", usuario);
+                                i.putExtra("DOACAO", doacao);
                                 startActivity(i);
                             }
 

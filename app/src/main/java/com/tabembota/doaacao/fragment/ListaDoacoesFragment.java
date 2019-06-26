@@ -33,12 +33,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.tabembota.doaacao.R;
+import com.tabembota.doaacao.helper.EnviarEmail;
 import com.tabembota.doaacao.helper.RecyclerItemClickListener;
 import com.tabembota.doaacao.activity.DoacaoActivity;
 import com.tabembota.doaacao.activity.PrincipalActivity;
 import com.tabembota.doaacao.adapter.AdapterDoacao;
 import com.tabembota.doaacao.config.ConfiguracaoFirebase;
-import com.tabembota.doaacao.helper.EnviarEmail;
+import com.tabembota.doaacao.helper.EnviarEmailService;
 import com.tabembota.doaacao.helper.UsuarioFirebase;
 import com.tabembota.doaacao.model.Doacao;
 import com.tabembota.doaacao.model.Interesse;
@@ -71,14 +72,6 @@ public class ListaDoacoesFragment extends Fragment {
 
     //Variáveis quaisquer
     private int recuperouDados = 0;
-    private String nomeNecessitado;
-    private String emailNecessitado;
-    private Call<Integer> call;
-    private EnviarEmail service;
-
-    //Uso de API
-    private Retrofit retrofit;
-    private String urlAPI = "https://us-central1-doacao-fa8a7.cloudfunctions.net/";
 
     public ListaDoacoesFragment() {
         // Required empty public constructor
@@ -105,12 +98,6 @@ public class ListaDoacoesFragment extends Fragment {
         //Configurando RecyclerView
         configurarRecyclerView();
         swipe();
-
-        //Retrofit
-        retrofit = new Retrofit.Builder()
-                .baseUrl(urlAPI)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
     }
 
@@ -374,59 +361,6 @@ public class ListaDoacoesFragment extends Fragment {
 
     }
 
-    private void enviarEmail(String assuntoBruto, String corpo, String idUsuarioNecessitado){
-        final String email = usuarioApp.getEmail();
-        final String assunto = "DoAção: ".concat(assuntoBruto);
-
-        service = retrofit.create(EnviarEmail.class);
-
-        call = service.enviarEmail(email, assunto, corpo);
-        call.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-
-            }
-        });
-
-        DatabaseReference referencia = ConfiguracaoFirebase.getDatabaseReference().child("user").child(idUsuarioNecessitado);
-        referencia.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario necessitado = dataSnapshot.getValue(Usuario.class);
-                nomeNecessitado = necessitado.getNome();
-                emailNecessitado = necessitado.getEmail();
-
-                String resposta = "Parabéns, " + nomeNecessitado + "! Você possui uma nova pessoa doadora interessada: " +
-                        UsuarioFirebase.getDadosUsuarioLogado().getNome() + ". Entre em contato com ela para combinarem tudo entre si!";
-
-                call = service.enviarEmail(emailNecessitado, assunto, resposta);
-                call.enqueue(new Callback<Integer>() {
-                    @Override
-                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Integer> call, Throwable t) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
     private boolean checarSeDoacaoEstaInteressada(Doacao alvo){
         for (Doacao teste : PrincipalActivity.listaSalvos){
             if(alvo.igual_a(teste)){
@@ -450,7 +384,7 @@ public class ListaDoacoesFragment extends Fragment {
             interesse.setTime_stamp(0);
             interesse.setStopped_at(1);
 
-            enviarEmail(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id());
+            //EnviarEmail.enviarEmailInteresse(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id(), usuarioApp);
 
             //Salvar no firebase
             final DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");

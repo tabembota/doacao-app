@@ -51,6 +51,13 @@
                     android:text="Email"
                     android:textColor="@color/colorPrimaryDark" />
 
+                <TextView
+                    android:id="@+id/textDoacao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Doação"
+                    android:textColor="@color/colorPrimaryDark" />
+
             </LinearLayout>
 
         </LinearLayout>

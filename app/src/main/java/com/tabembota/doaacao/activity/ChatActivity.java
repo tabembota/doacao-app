@@ -43,6 +43,7 @@ public class ChatActivity extends AppCompatActivity {
     //Informação do remetente
     private String idUsuarioRemetente;
     private Usuario usuarioApp = UsuarioFirebase.getDadosUsuarioLogado();
+    private Doacao doacao;
 
     //Componentes da interface
     private TextView textViewNome;
@@ -72,6 +73,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //Recuperar dados do usuário destinatário do intent
         Usuario usuarioDestinatario = (Usuario) getIntent().getSerializableExtra("USUARIO");
+        doacao = (Doacao) getIntent().getSerializableExtra("DOACAO");
         idUsuarioDestinatario = usuarioDestinatario.getIdUsuario();
 
         //Configurações iniciais
@@ -89,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
 
         database = ConfiguracaoFirebase.getDatabaseReference();
         mensagensRef = database.child("mensagens")
+                .child(doacao.getOp_id())
                 .child(idUsuarioRemetente)
                 .child(idUsuarioDestinatario);
 
@@ -123,6 +126,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void salvarMensagem(String idRemetente, String idDestinatario, Mensagem mensagem){
         database.child("mensagens")
+                .child(doacao.getOp_id())
                 .child(idRemetente).child(idDestinatario)
                 .push()
                 .setValue(mensagem);
@@ -150,7 +154,8 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("analisando", "removeu!");
+                listaMensagens.remove(dataSnapshot.getValue(Mensagem.class));
+                adapter.notifyDataSetChanged();
             }
 
             @Override
