@@ -7,6 +7,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class CadastroActivity extends AppCompatActivity {
     private TextInputEditText textInputNome, textInputEmail, textInputSenha, textInputBairro;
     private FirebaseAuth usuarioRef = ConfiguracaoFirebase.getFirebaseAuth();
     private Usuario usuario;
+    private Button btCadastrar;
 
     private ProgressBar progressBar;
 
@@ -41,9 +44,27 @@ public class CadastroActivity extends AppCompatActivity {
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputSenha = findViewById(R.id.textInputSenha);
         textInputBairro = findViewById(R.id.textInputBairro);
+        btCadastrar = findViewById(R.id.btCadastrar);
 
         progressBar = findViewById(R.id.progressBar);
 
+    }
+
+    private void setarClicavel(boolean escolha){
+        if(escolha){
+            textInputNome.setFocusableInTouchMode(true);
+            textInputEmail.setFocusableInTouchMode(true);
+            textInputBairro.setFocusableInTouchMode(true);
+            textInputSenha.setFocusableInTouchMode(true);
+        }
+        else{
+            textInputNome.setFocusable(false);
+            textInputEmail.setFocusable(false);
+            textInputSenha.setFocusable(false);
+            textInputBairro.setFocusable(false);
+        }
+
+        btCadastrar.setClickable(escolha);
     }
 
     public void cadastrarUsuario(View view){
@@ -79,6 +100,8 @@ public class CadastroActivity extends AppCompatActivity {
 
     private void autenticaUsuario(String nome, String email, String senha, String bairro){
         progressBar.setVisibility(View.VISIBLE);
+
+        setarClicavel(false);
 
         usuario = new Usuario();
         usuario.setNome(nome);
@@ -130,6 +153,9 @@ public class CadastroActivity extends AppCompatActivity {
                 }
                 //Caso não seja bem sucedida, tratar.
                 else{
+
+                    progressBar.setVisibility(View.GONE);
+                    setarClicavel(true);
 
                     String excecao = "";
                     try{

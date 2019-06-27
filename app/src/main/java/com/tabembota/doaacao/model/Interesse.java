@@ -56,4 +56,8 @@ public class Interesse {
 
         return false;
     }
+
+//    @Exclude
+//    @Override
+//    public boolean hash
 }

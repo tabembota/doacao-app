@@ -60,25 +60,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Já logado
-        if(usuarioRef.getCurrentUser() != null){
-            iniciarTelaPrincipal(
-                    UsuarioFirebase.getDadosUsuarioLogado().getNome(),
-                    UsuarioFirebase.getDadosUsuarioLogado().getEmail()
-            );
-        }
-    }
-
-    //Cant press back on login screen
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-    }
-
     private boolean validarLogin(String email, String senha){
         if(!email.isEmpty()){
             if(!senha.isEmpty()){
@@ -140,36 +121,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void cadastrar(View view){
-        Intent i = new Intent(this, CadastroActivity.class);
-        startActivityForResult(i, 101);
-        //finish();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == RESULT_OK){
-            if(requestCode == 101){
-                email = data.getStringExtra("CADASTRO_EMAIL");
-                name = data.getStringExtra("CADASTRO_NOME");
-                //senha = data.getStringExtra("CADASTRO_SENHA");
-
-                Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
-                intent.putExtra("LOGIN_EMAIL", email);
-                intent.putExtra("LOGIN_NAME", name);
-                startActivity(intent);
-                finish();
-            }
-        }
-    }
-
     private void iniciarTelaPrincipal(String nome, String email){
-        Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
+        Intent intent = new Intent();
         intent.putExtra("LOGIN_EMAIL", email);
-        intent.putExtra("LOGIN_NAME", nome);
-        startActivity(intent);
+        intent.putExtra("LOGIN_NOME", nome);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

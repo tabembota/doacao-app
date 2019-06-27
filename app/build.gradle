@@ -10,12 +10,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {
@@ -45,6 +51,9 @@ dependencies {
 
     //Circle ImageView
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    //Slider
+    implementation 'com.heinrichreimersoftware:material-intro:1.6'
 }
 
 apply plugin: 'com.google.gms.google-services'

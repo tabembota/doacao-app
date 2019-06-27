@@ -384,7 +384,7 @@ public class ListaDoacoesFragment extends Fragment {
             interesse.setTime_stamp(0);
             interesse.setStopped_at(1);
 
-            //EnviarEmail.enviarEmailInteresse(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id(), usuarioApp);
+            EnviarEmail.enviarEmailInteresse(doacao.getTitulo(), doacao.getEmail(), doacao.getUser_id(), usuarioApp);
 
             //Salvar no firebase
             final DatabaseReference interesseRef = ConfiguracaoFirebase.getDatabaseReference().child("interesse");

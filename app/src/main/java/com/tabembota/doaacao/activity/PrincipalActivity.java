@@ -309,7 +309,7 @@ public class PrincipalActivity extends AppCompatActivity
 
         } else if (id == R.id.sair) {
             ConfiguracaoFirebase.getFirebaseAuth().signOut();
-            startActivity(new Intent(PrincipalActivity.this, LoginActivity.class));
+            startActivity(new Intent(PrincipalActivity.this, MainIntroActivity.class));
             finish();
         }
 
@@ -362,21 +362,24 @@ public class PrincipalActivity extends AppCompatActivity
                 Interesse interesse = dataSnapshot.getValue(Interesse.class);
 
                 for(Doacao doacao : listaDoacoes){
-                    if(interesse.getOp_id().equals(doacao.getOp_id()) && !listaInteresses.contains(interesse)){
+                    for(Interesse interesseComp : listaInteresses){
+                        if(interesse.getOp_id().equals(doacao.getOp_id()) && !interesse.equals(interesseComp)){
 
-                        listaInteresses.add(interesse);
+                            listaInteresses.add(interesse);
 
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                                .setSmallIcon(R.drawable.ic_stars_white_24dp)
-                                .setContentTitle("Doação: " + doacao.getTitulo())
-                                .setContentText("Há novos interessados em sua doação!")
-                                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                    .setSmallIcon(R.drawable.ic_stars_white_24dp)
+                                    .setContentTitle("Doação: " + doacao.getTitulo())
+                                    .setContentText("Há novos interessados em sua doação!")
+                                    .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
 
-                        // notificationId is a unique int for each notification that you must define
-                        notificationManager.notify(0, builder.build());
+                            // notificationId is a unique int for each notification that you must define
+                            notificationManager.notify(0, builder.build());
+                        }
                     }
+
                 }
             }
 
